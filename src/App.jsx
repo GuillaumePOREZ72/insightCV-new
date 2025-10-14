@@ -104,7 +104,80 @@ function App() {
 
   return (
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8 flex items-center justify-center">
-     
+      <div className="max-w-5xl mx-auto w-full">
+        <div className="text-center mb-6">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent mb-4">
+            AI Resume Analyzer
+          </h1>
+          <p className="text-slate-300 text-sm sm:text-base">
+            Upload your PDF resume and get instant AI feedback
+          </p>
+        </div>
+        {!uploadedFile && (
+          <div className="upload-area">
+            <div className="upload-zone">
+              <div className="text-4xl sm:text-5xl lg:text-6xl mb-4">📄</div>
+              <h3 className="text-xl sm:text-2xl text-slate-200 mb-2">
+                Upload Your Resume
+              </h3>
+              <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
+                PDF files only - Get instant analysis
+              </p>
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={handleFileUpload}
+                disabled={!aiReady}
+                id="file-upload"
+              />
+              <label
+                htmlFor="file-upload"
+                className={`inline-block btn-primary ${
+                  !aiReady ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                Choose PDF File
+              </label>
+            </div>
+          </div>
+        )}
+        {isLoading && (
+          <div className="p-6 sm:p-8 max-w-md mx-auto">
+            <div className="text-center">
+              <div className="loading-spinner"></div>
+              <h3 className="text-lg sm:text-xl text-slate-200 mb-2">
+                Analyzing Your Resume
+              </h3>
+              <p className="text-slate-400 text-sm sm:text-base">
+                Please wait while AI reviews your resume...
+              </p>
+            </div>
+          </div>
+        )}
+        {analysis && uploadedFile && (
+          <div className="space-y-6 p-4 sm:px-8 lg:px-16">
+            <div className="file-upload-card"></div>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <div className="flex items-center gap-4">
+                <div className="icon-container-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-500/30">
+                  <span className="text-3xl">📄</span>
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-green-500 mb-1">
+                    Analysis Complete
+                  </h3>
+                  <p className="text-slate-300 text-sm break-all">
+                    {uploadedFile.name}
+                  </p>
+                </div>
+              </div>
+              <div className="flex gap-3">
+                <button></button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
