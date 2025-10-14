@@ -38,12 +38,20 @@ function App() {
 
   const parseJSONResponse = (reply) => {
     try {
-      
+      const match = reply.match(/\{[\s\S]*\}/);
+      const parsed = match ? JSON.parse(match[0]) : {};
+      if (!parsed.overallScore && !parsed.error) {
+        throw new Error("INvalid AI response");
+      }
+      return parsed;
     } catch (error) {
-      
+      throw new Error(`Failed to parse AI response: ${error.message}`);
     }
-  }
+  };
 
+  const analyseResume = async () => {
+    
+  }
 
   return (
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8 flex items-center justify-center">
