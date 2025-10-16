@@ -285,9 +285,27 @@ function App() {
               </div>
             </div>
 
-            <div>
-              <div>
-                
+            <div className="section-card group">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="icon-container bg-purple-500/20">
+                  <span className="text-purple-300 text-lg">📋</span>
+                </div>
+                <h4 className="text-xl font-bold text-white">
+                  Executive Summary
+                </h4>
+              </div>
+              <div className="summary-box">
+                <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+                  {analysis.summary}
+                </p>
+              </div>
+            </div>
+
+            <div className="section-card group">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="icon-container bg-cyan-500/20">
+                  <span>📊</span>
+                </div>
               </div>
             </div>
           </div>
