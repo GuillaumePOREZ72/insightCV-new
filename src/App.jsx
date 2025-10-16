@@ -124,7 +124,7 @@ function App() {
                 Upload Your Resume
               </h3>
               <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
-                PDF files only - Get instant analysis
+                PDF files only • Get instant analysis
               </p>
               <input
                 type="file"
@@ -245,6 +245,19 @@ function App() {
               <div className="feature-card-green group">
                 <div className="bg-green-500/20 icon-container-lg mx-auto mb-3 group-hover:bg-green-400/30 transition-colors">
                   <span className="text-green-300 text-xl">✔️</span>
+                </div>
+                <h4 className="text-green-300 text-sm uppercase tracking-wide mb-3">
+                  Top Strengths
+                </h4>
+                <div>
+                  {analysis.strengths.slice(0, 3).map((strength, index) => (
+                    <div key={index} className="list-item-green">
+                      <span className="text-green-400 text-sm mt-0.5">•</span>
+                      <span className="text-slate-200 font-medium text-sm leading-relaxed">
+                        {strength}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
