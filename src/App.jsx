@@ -220,7 +220,33 @@ function App() {
                   </span>
                 </div>
               </div>
-              <div className="progress-bar"></div>
+              <div className="progress-bar">
+                <div
+                  className={`
+                  h-full transition-all duration-1000 ease-out shadow-sm ${
+                    parseInt(analysis.overallScore) >= 8
+                      ? "progress-excellent"
+                      : parseInt(analysis.overallScore) >= 6
+                      ? "progress-good"
+                      : "progress-improvement"
+                  }
+                  `}
+                  style={{
+                    width: `${(parseInt(analysis.overallScore) / 10) * 100}%`,
+                  }}
+                ></div>
+              </div>
+              <p className="text-slate-400 text-sm mt-3 text-center font-medium">
+                Score based on content quality, formatting, and keyword usage
+              </p>
+            </div>
+
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div className="feature-card-green group">
+                <div className="bg-green-500/20 icon-container-lg mx-auto mb-3 group-hover:bg-green-400/30 transition-colors">
+                  <span className="text-green-300 text-xl">✔️</span>
+                </div>
+              </div>
             </div>
           </div>
         )}
