@@ -340,9 +340,42 @@ function App() {
             </div>
 
             <div className="section-card group">
-              <div>
+              <div className="flex items-center gap-3 mb-6">
+                <div className="icon-container bg-purple-500/20">
+                  <span className="text-lg text-purple-300">🔍</span>
+                </div>
+                <h2 className="text-xl font-bold text-purple-400">
+                  Resume Insights
+                </h2>
+              </div>
+              <div className="grid gap-4">
+                <div className="info-box-cyan group/item">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-lg text-cyan-400">🎯</span>
+                    <h3 className="text-cyan-300 font-semibold">
+                      Action Items
+                    </h3>
+                  </div>
+                  <div className="space-y-2">
+                    {(
+                      analysis.actionItems || [
+                        "OPtimize keyword placement for better ATS scoring",
+                        "Enhance content with quantifiable achievements",
+                        "Consider industry-specific terminology",
+                      ]
+                    ).map((item, index) => (
+                      <div className="list-item-cyan" key={index}>
+                        <span className="text-cyan-400">•</span>
+                        <span>{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
                 <div>
-                  <span></span>
+                  <div>
+                    <span></span>
+                    <h3></h3>
+                  </div>
                 </div>
               </div>
             </div>
