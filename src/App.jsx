@@ -26,11 +26,14 @@ function App() {
     const arrayBuffer = await file.arrayBuffer();
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
     const texts = await Promise.all(
-      Array.from({ length: pdf.numPages }, (_, i) => pdf.getPage(i + 1)).then(
-        (page) =>
-          page
-            .getTextContent()
-            .then((tc) => tc.items.map((i) => i.str).join(" "))
+      Array.from({ length: pdf.numPages }, (_, i) =>
+        pdf
+          .getPage(i + 1)
+          .then((page) =>
+            page
+              .getTextContent()
+              .then((tc) => tc.items.map((i) => i.str).join(" "))
+          )
       )
     );
     return texts.join("\n").trim();
@@ -156,24 +159,68 @@ function App() {
         )}
         {analysis && uploadedFile && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
-            <div className="file-upload-card"></div>
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="icon-container-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-500/30">
-                  <span className="text-3xl">📄</span>
+            <div className="file-upload-card">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="icon-container-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-500/30">
+                    <span className="text-3xl">📄</span>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-bold text-green-500 mb-1">
+                      Analysis Complete
+                    </h3>
+                    <p className="text-slate-300 text-sm break-all">
+                      {uploadedFile.name}
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold text-green-500 mb-1">
-                    Analysis Complete
-                  </h3>
-                  <p className="text-slate-300 text-sm break-all">
-                    {uploadedFile.name}
+                <div className="flex gap-3">
+                  <button onClick={reset} className="btn-secondary">
+                    🔃 New Analysis
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="score-card">
+              <div className="text-center mb-6">
+                <div className="flex items-center justify-center gap-2 mb-3">
+                  <span className="text-2xl">🏆</span>
+                  <h2 className="text-2xl sm:text-3xl font-bold text-white">
+                    Overall Score
+                  </h2>
+                </div>
+                <div className="relative">
+                  <p className="text-6xl sm:text-8xl font-extrabold text-cyan-400 drop-shadow-lg">
+                    {analysis.overallScore || "7"}
                   </p>
                 </div>
+                <div
+                  className={`inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full ${
+                    parseInt(analysis.overallScore) >= 8
+                      ? "score-status-excellent"
+                      : parseInt(analysis.overallScore) >= 6
+                      ? "score-status-good"
+                      : "score-status-improvement"
+                  }`}
+                >
+                  <span>
+                    {parseInt(analysis.overallScore) >= 8
+                      ? "🌟"
+                      : parseInt(analysis.overallScore) >= 6
+                      ? "⭐"
+                      : "📈"}
+                  </span>
+                  <span className="font-semibold text-lg">
+                    {parseInt(analysis.overallScore) >= 8
+                      ? "Excellent"
+                      : parseInt(analysis.overallScore) >= 6
+                      ? "Good"
+                      : "Needs Improvement"}
+                  </span>
+                </div>
               </div>
-              <div className="flex gap-3">
-                <button></button>
-              </div>
+              <div className="progress-bar"></div>
             </div>
           </div>
         )}
