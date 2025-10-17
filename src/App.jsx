@@ -108,6 +108,7 @@ function App() {
   return (
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8 flex items-center justify-center">
       <div className="max-w-5xl mx-auto w-full">
+        {/* ==================== EN-TÊTE ==================== */}
         <div className="text-center mb-6">
           <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent animate-pulse mb-4">
             CVBoost
@@ -116,6 +117,8 @@ function App() {
             Téléchargez votre CV PDF et obtenez un retour instantané par IA
           </p>
         </div>
+
+        {/* ==================== ZONE DE TÉLÉCHARGEMENT ==================== */}
         {!uploadedFile && (
           <div className="upload-area">
             <div className="upload-zone">
@@ -145,6 +148,8 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* ==================== ÉCRAN DE CHARGEMENT ==================== */}
         {isLoading && (
           <div className="p-6 sm:p-8 max-w-md mx-auto">
             <div className="text-center">
@@ -158,8 +163,11 @@ function App() {
             </div>
           </div>
         )}
+
+        {/* ==================== RÉSULTATS DE L'ANALYSE ==================== */}
         {analysis && uploadedFile && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
+            {/* Card: Fichier analysé */}
             <div className="file-upload-card">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div className="flex items-center gap-4">
@@ -183,6 +191,7 @@ function App() {
               </div>
             </div>
 
+            {/* Card: Score global */}
             <div className="score-card">
               <div className="text-center mb-6">
                 <div className="flex items-center justify-center gap-2 mb-3">
@@ -243,6 +252,7 @@ function App() {
               </p>
             </div>
 
+            {/* Card: Points forts et Améliorations */}
             <div className="grid sm:grid-cols-2 gap-4">
               <div className="feature-card-green group">
                 <div className="bg-green-500/20 icon-container-lg mx-auto mb-3 group-hover:bg-green-400/30 transition-colors">
@@ -287,6 +297,7 @@ function App() {
               </div>
             </div>
 
+            {/* Card: Résumé exécutif */}
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-4">
                 <div className="icon-container bg-purple-500/20">
@@ -303,6 +314,7 @@ function App() {
               </div>
             </div>
 
+            {/* Card: Indicateurs de performance */}
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-cyan-500/20">
@@ -341,6 +353,7 @@ function App() {
               </div>
             </div>
 
+            {/* Card: Informations sur le CV (Actions et Conseils) */}
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-purple-500/20">
@@ -399,6 +412,7 @@ function App() {
               </div>
             </div>
 
+            {/* Card: Optimisation ATS */}
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-violet-500/20">
@@ -457,6 +471,7 @@ function App() {
               </div>
             </div>
 
+            {/* Card: Mots-clés recommandés */}
             <div className="section-card group">
               <div className="flex items-center gap-3 mb-6">
                 <div className="icon-container bg-blue-500/20">
