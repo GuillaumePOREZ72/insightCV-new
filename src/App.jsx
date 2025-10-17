@@ -375,10 +375,106 @@ function App() {
                 <div className="info-box-emerald group/item">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-lg">💡</span>
-                    
-                    <h3></h3>
+                    <h3 className="text-emerald-300 font-semibold">Pro Tips</h3>
+                  </div>
+                  <div className="space-y-2">
+                    {(
+                      analysis.proTips || [
+                        "Use action verbs to start bullet points",
+                        "Keep descriptions concise and impactful",
+                        "Tailor keywords to specific job descriptions",
+                      ]
+                    ).map((tip, index) => (
+                      <div key={index} className="list-item-emerald">
+                        <span className="text-emerald-400">•</span>
+                        <span>{tip}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              </div>
+            </div>
+
+            <div className="section-card group">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="icon-container bg-violet-500/20">
+                  <span className="text-lg">🤖</span>
+                </div>
+                <h2 className="text-violet-400 font-bold text-xl">
+                  ATS Optimization
+                </h2>
+              </div>
+
+              <div className="info-box-violet mb-4">
+                <div className="flex items-start gap-3 mb-3">
+                  <div>
+                    <h3 className="text-violet-300 font-semibold mb-2">
+                      What is ATS?
+                    </h3>
+                    <p className="text-slate-200 text-sm leading-relaxed">
+                      <strong className="text-violet-300">
+                        Applicant Tracking Systems (ATS)
+                      </strong>{" "}
+                      are software tools used by 75% of employers to
+                      automatically screen resumes before human review. These
+                      systems scan for keywords, proper formatting, and relevant
+                      qualifications to rznk candidates. If your resume isn't
+                      ATS-friendly, it may never reach a human recruiter.'
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="info-box-violet">
+                <div className="flex items-center gap-3 mb-3">
+                  <span className="text-violet-400 text-lg">🤖</span>
+                  <h3 className="text-lg font-semibold text-violet-300">
+                    ATS Compatibility Checklist
+                  </h3>
+                </div>
+                <div className="space-y-2">
+                  {(presenceChecklist || []).map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex items-start gap-2 text-slate-200"
+                    >
+                      <span
+                        className={`${
+                          item.present ? "text-emerald-400" : "text-red-400"
+                        }`}
+                      >
+                        {item.present ? "✅" : "❌"}
+                      </span>
+                      <span>{item.label}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="section-card group">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="icon-container bg-blue-500/20">
+                  <span className="text-lg">🔑</span>
+                </div>
+                <h2 className="text-blue-400 font-bold text-xl">
+                  Recommended Keywords
+                </h2>
+              </div>
+              <div className="flex flex-wrap gap-3 mb-4">
+                {analysis.keywords.map((k, i) => (
+                  <span key={i} className="keyword-tag group/item">
+                    {k}
+                  </span>
+                ))}
+              </div>
+              <div className="info-box-blue">
+                <p className="text-slate-300 text-sm leading-relaxed flex items-start gap-2">
+                  <span className="text-lg mt-0.5">💡</span>
+                  Consider incorporating these keywords naturally into your
+                  resume to improve ATS compatibility and increase your chances
+                  of getting noticed by recruiters.
+                </p>
               </div>
             </div>
           </div>
