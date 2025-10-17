@@ -44,11 +44,11 @@ function App() {
       const match = reply.match(/\{[\s\S]*\}/);
       const parsed = match ? JSON.parse(match[0]) : {};
       if (!parsed.overallScore && !parsed.error) {
-        throw new Error("INvalid AI response");
+        throw new Error("Réponse IA invalide");
       }
       return parsed;
     } catch (error) {
-      throw new Error(`Failed to parse AI response: ${error.message}`);
+      throw new Error(`Échec de l'analyse de la réponse IA : ${error.message}`);
     }
   };
 
@@ -59,7 +59,7 @@ function App() {
     );
     const response = await window.puter.ai.chat(
       [
-        { role: "system", content: "You are an expert resume reviewer..." },
+        { role: "system", content: "Vous êtes un expert en révision de CV..." },
         { role: "user", content: prompt },
       ],
       {
@@ -76,7 +76,7 @@ function App() {
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
     if (!file || file.type !== "application/pdf") {
-      return alert("PLease upload a PDF file only.");
+      return alert("Veuillez télécharger uniquement un fichier PDF.");
     }
 
     setUploadedFile(file);
@@ -91,7 +91,7 @@ function App() {
       setPresenceChecklist(buildPresenceChecklist(text));
       setAnalysis(await analyzeResume(text));
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      alert(`Erreur : ${error.message}`);
       reset();
     } finally {
       setIsLoading(false);
@@ -109,11 +109,11 @@ function App() {
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8 flex items-center justify-center">
       <div className="max-w-5xl mx-auto w-full">
         <div className="text-center mb-6">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent mb-4">
-            AI Resume Analyzer
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent animate-pulse mb-4">
+            CVBoost
           </h1>
           <p className="text-slate-300 text-sm sm:text-base">
-            Upload your PDF resume and get instant AI feedback
+            Téléchargez votre CV PDF et obtenez un retour instantané par IA
           </p>
         </div>
         {!uploadedFile && (
@@ -121,10 +121,10 @@ function App() {
             <div className="upload-zone">
               <div className="text-4xl sm:text-5xl lg:text-6xl mb-4">📄</div>
               <h3 className="text-xl sm:text-2xl text-slate-200 mb-2">
-                Upload Your Resume
+                Téléchargez votre CV
               </h3>
               <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
-                PDF files only • Get instant analysis
+                Fichiers PDF uniquement • Analyse instantanée
               </p>
               <input
                 type="file"
@@ -132,6 +132,7 @@ function App() {
                 onChange={handleFileUpload}
                 disabled={!aiReady}
                 id="file-upload"
+                className="hidden"
               />
               <label
                 htmlFor="file-upload"
@@ -139,7 +140,7 @@ function App() {
                   !aiReady ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
-                Choose PDF File
+                Choisir un fichier PDF
               </label>
             </div>
           </div>
@@ -149,10 +150,10 @@ function App() {
             <div className="text-center">
               <div className="loading-spinner"></div>
               <h3 className="text-lg sm:text-xl text-slate-200 mb-2">
-                Analyzing Your Resume
+                Analyse de votre CV en cours
               </h3>
               <p className="text-slate-400 text-sm sm:text-base">
-                Please wait while AI reviews your resume...
+                Veuillez patienter pendant que l'IA examine votre CV...
               </p>
             </div>
           </div>
@@ -167,7 +168,7 @@ function App() {
                   </div>
                   <div>
                     <h3 className="text-xl font-bold text-green-500 mb-1">
-                      Analysis Complete
+                      Analyse terminée
                     </h3>
                     <p className="text-slate-300 text-sm break-all">
                       {uploadedFile.name}
@@ -176,7 +177,7 @@ function App() {
                 </div>
                 <div className="flex gap-3">
                   <button onClick={reset} className="btn-secondary">
-                    🔃 New Analysis
+                    🔃 Nouvelle analyse
                   </button>
                 </div>
               </div>
@@ -187,7 +188,7 @@ function App() {
                 <div className="flex items-center justify-center gap-2 mb-3">
                   <span className="text-2xl">🏆</span>
                   <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                    Overall Score
+                    Score global
                   </h2>
                 </div>
                 <div className="relative">
@@ -215,8 +216,8 @@ function App() {
                     {parseInt(analysis.overallScore) >= 8
                       ? "Excellent"
                       : parseInt(analysis.overallScore) >= 6
-                      ? "Good"
-                      : "Needs Improvement"}
+                      ? "Bon"
+                      : "À améliorer"}
                   </span>
                 </div>
               </div>
@@ -237,7 +238,8 @@ function App() {
                 ></div>
               </div>
               <p className="text-slate-400 text-sm mt-3 text-center font-medium">
-                Score based on content quality, formatting, and keyword usage
+                Score basé sur la qualité du contenu, la mise en forme et
+                l'utilisation des mots-clés
               </p>
             </div>
 
@@ -247,7 +249,7 @@ function App() {
                   <span className="text-green-300 text-xl">✔️</span>
                 </div>
                 <h4 className="text-green-300 text-sm uppercase tracking-wide mb-3">
-                  Top Strengths
+                  Points forts
                 </h4>
                 <div className="space-y-2 text-left">
                   {analysis.strengths.slice(0, 3).map((strength, index) => (
@@ -266,7 +268,7 @@ function App() {
                   <span className="text-orange-300 text-xl">⚡</span>
                 </div>
                 <h4 className="text-orange-300 text-sm uppercase tracking-wide mb-3">
-                  Main Improvements
+                  Améliorations principales
                 </h4>
                 <div className="space-y-2 text-left">
                   {analysis.improvements
@@ -291,7 +293,7 @@ function App() {
                   <span className="text-purple-300 text-lg">📋</span>
                 </div>
                 <h4 className="text-xl font-bold text-white">
-                  Executive Summary
+                  Résumé exécutif
                 </h4>
               </div>
               <div className="summary-box">
@@ -307,7 +309,7 @@ function App() {
                   <span className="text-cyan-300 text-lg">📊</span>
                 </div>
                 <h4 className="text-xl font-bold text-white">
-                  Performance Metrics
+                  Indicateurs de performance
                 </h4>
               </div>
               <div className="space-y-4">
@@ -345,7 +347,7 @@ function App() {
                   <span className="text-lg text-purple-300">🔍</span>
                 </div>
                 <h2 className="text-xl font-bold text-purple-400">
-                  Resume Insights
+                  Informations sur le CV
                 </h2>
               </div>
               <div className="grid gap-4">
@@ -353,15 +355,15 @@ function App() {
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-lg text-cyan-400">🎯</span>
                     <h3 className="text-cyan-300 font-semibold">
-                      Action Items
+                      Actions à entreprendre
                     </h3>
                   </div>
                   <div className="space-y-2">
                     {(
                       analysis.actionItems || [
-                        "OPtimize keyword placement for better ATS scoring",
-                        "Enhance content with quantifiable achievements",
-                        "Consider industry-specific terminology",
+                        "Optimiser le placement des mots-clés pour un meilleur score ATS",
+                        "Enrichir le contenu avec des réalisations quantifiables",
+                        "Considérer la terminologie spécifique au secteur",
                       ]
                     ).map((item, index) => (
                       <div className="list-item-cyan" key={index}>
@@ -375,14 +377,16 @@ function App() {
                 <div className="info-box-emerald group/item">
                   <div className="flex items-center gap-3 mb-2">
                     <span className="text-lg">💡</span>
-                    <h3 className="text-emerald-300 font-semibold">Pro Tips</h3>
+                    <h3 className="text-emerald-300 font-semibold">
+                      Conseils de pro
+                    </h3>
                   </div>
                   <div className="space-y-2">
                     {(
                       analysis.proTips || [
-                        "Use action verbs to start bullet points",
-                        "Keep descriptions concise and impactful",
-                        "Tailor keywords to specific job descriptions",
+                        "Utiliser des verbes d'action pour commencer les puces",
+                        "Garder les descriptions concises et percutantes",
+                        "Adapter les mots-clés aux descriptions de poste spécifiques",
                       ]
                     ).map((tip, index) => (
                       <div key={index} className="list-item-emerald">
@@ -401,7 +405,7 @@ function App() {
                   <span className="text-lg">🤖</span>
                 </div>
                 <h2 className="text-violet-400 font-bold text-xl">
-                  ATS Optimization
+                  Optimisation ATS
                 </h2>
               </div>
 
@@ -409,17 +413,18 @@ function App() {
                 <div className="flex items-start gap-3 mb-3">
                   <div>
                     <h3 className="text-violet-300 font-semibold mb-2">
-                      What is ATS?
+                      Qu'est-ce qu'un ATS ?
                     </h3>
                     <p className="text-slate-200 text-sm leading-relaxed">
                       <strong className="text-violet-300">
-                        Applicant Tracking Systems (ATS)
+                        Les systèmes de suivi des candidatures (ATS)
                       </strong>{" "}
-                      are software tools used by 75% of employers to
-                      automatically screen resumes before human review. These
-                      systems scan for keywords, proper formatting, and relevant
-                      qualifications to rznk candidates. If your resume isn't
-                      ATS-friendly, it may never reach a human recruiter.'
+                      sont des outils logiciels utilisés par 75% des employeurs
+                      pour filtrer automatiquement les CV avant examen humain.
+                      Ces systèmes recherchent des mots-clés, une mise en forme
+                      appropriée et des qualifications pertinentes pour classer
+                      les candidats. Si votre CV n'est pas compatible ATS, il
+                      pourrait ne jamais atteindre un recruteur humain.
                     </p>
                   </div>
                 </div>
@@ -429,7 +434,7 @@ function App() {
                 <div className="flex items-center gap-3 mb-3">
                   <span className="text-violet-400 text-lg">🤖</span>
                   <h3 className="text-lg font-semibold text-violet-300">
-                    ATS Compatibility Checklist
+                    Liste de compatibilité ATS
                   </h3>
                 </div>
                 <div className="space-y-2">
@@ -458,7 +463,7 @@ function App() {
                   <span className="text-lg">🔑</span>
                 </div>
                 <h2 className="text-blue-400 font-bold text-xl">
-                  Recommended Keywords
+                  Mots-clés recommandés
                 </h2>
               </div>
               <div className="flex flex-wrap gap-3 mb-4">
@@ -471,9 +476,9 @@ function App() {
               <div className="info-box-blue">
                 <p className="text-slate-300 text-sm leading-relaxed flex items-start gap-2">
                   <span className="text-lg mt-0.5">💡</span>
-                  Consider incorporating these keywords naturally into your
-                  resume to improve ATS compatibility and increase your chances
-                  of getting noticed by recruiters.
+                  Pensez à incorporer ces mots-clés naturellement dans votre CV
+                  pour améliorer la compatibilité ATS et augmenter vos chances
+                  d'être remarqué par les recruteurs.
                 </p>
               </div>
             </div>
