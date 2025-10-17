@@ -35,5 +35,18 @@ export class PDFService {
     return true;
   }
 
-  
+  /**
+   * Extrait le texte d'une page spécifique
+   * @private - Méthode interne, pas utilisée directement
+   * @param {PDFDocumentProxy} pdf - Document PDF chargé
+   * @param {number} pageNumber - Numéro de la page (commence à 1)
+   * @returns {Promise<string>} Texte de la page
+   */
+  async extractPageText(pdf, pageNumber) {
+    const page = pdf.getPage(pageNumber);
+
+    const textContent = await page.getTextContent();
+
+    return textContent.items.map((item) => item.str).join(" ");
+  }
 }
