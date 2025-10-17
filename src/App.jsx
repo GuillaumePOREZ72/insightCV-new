@@ -9,7 +9,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analysis, setAnalysis] = useState(null);
-  const [resumeText, setResumeText] = useState("");
+  const [, setResumeText] = useState("");
   const [presenceChecklist, setPresenceChecklist] = useState([]);
 
   useEffect(() => {
