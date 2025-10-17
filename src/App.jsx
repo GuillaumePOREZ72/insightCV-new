@@ -110,7 +110,7 @@ function App() {
       <div className="max-w-5xl mx-auto w-full">
         {/* ==================== EN-TÊTE ==================== */}
         <div className="text-center mb-6">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-light bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent animate-pulse mb-4">
+          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent mb-4">
             CVBoost
           </h1>
           <p className="text-slate-300 text-sm sm:text-base">
