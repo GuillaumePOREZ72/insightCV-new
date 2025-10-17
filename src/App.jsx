@@ -371,9 +371,11 @@ function App() {
                     ))}
                   </div>
                 </div>
-                <div>
-                  <div>
-                    <span></span>
+
+                <div className="info-box-emerald group/item">
+                  <div className="flex items-center gap-3 mb-2">
+                    <span className="text-lg">💡</span>
+                    
                     <h3></h3>
                   </div>
                 </div>
