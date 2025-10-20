@@ -1,6 +1,7 @@
 import { METRIC_CONFIG } from "../constants";
 import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
 import Header from "./components/layout/Header";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -11,7 +12,7 @@ function App() {
       <div className="max-w-5xl mx-auto w-full">
         {/* ==================== EN-TÊTE ====================  */}
         <Header />
-        
+
         {/* ==================== AFFICHAGE ERREUR ==================== */}
         {state.error && (
           <div className="max-w-2xl mx-auto mb-6">
@@ -65,19 +66,7 @@ function App() {
         )}
 
         {/* ==================== ÉCRAN DE CHARGEMENT ==================== */}
-        {state.isLoading && (
-          <div className="p-6 sm:p-8 max-w-md mx-auto">
-            <div className="text-center">
-              <div className="loading-spinner"></div>
-              <h3 className="text-lg sm:text-xl text-slate-200 mb-2">
-                Analyse de votre CV en cours
-              </h3>
-              <p className="text-slate-400 text-sm sm:text-base">
-                Veuillez patienter pendant que l'IA examine votre CV...
-              </p>
-            </div>
-          </div>
-        )}
+        <LoadingSpinner/>
 
         {/* ==================== RÉSULTATS DE L'ANALYSE ==================== */}
         {hasResults && (
