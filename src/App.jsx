@@ -4,6 +4,10 @@ import Header from "./components/layout/Header";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import ErrorMessage from "./components/common/ErrorMessage";
 import FileUploadZone from "./components/upload/FileUploadZone";
+import FileCard from "./components/upload/FileCard";
+import SummaryCard from "./components/analysis/SummaryCard";
+import StrengthsCard from "./components/analysis/StrengthsCard";
+import ImprovementsCard from "./components/analysis/ImprovementsCard";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -32,7 +36,7 @@ function App() {
         {hasResults && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
             {/* Card: Fichier analysé */}
-            
+            <FileCard fileName="{state.uploadedFile.name}" onReset={reset} />
 
             {/* Card: Score global */}
             <div className="score-card">
@@ -99,67 +103,13 @@ function App() {
 
             {/* Card: Points forts et Améliorations */}
             <div className="grid sm:grid-cols-2 gap-4">
-              <div className="feature-card-green group">
-                <div className="bg-green-500/20 icon-container-lg mx-auto mb-3 group-hover:bg-green-400/30 transition-colors">
-                  <span className="text-green-300 text-xl">✔️</span>
-                </div>
-                <h4 className="text-green-300 text-sm uppercase tracking-wide mb-3">
-                  Points forts
-                </h4>
-                <div className="space-y-2 text-left">
-                  {state.analysis.strengths
-                    .slice(0, 3)
-                    .map((strength, index) => (
-                      <div key={index} className="list-item-green">
-                        <span className="text-green-400 text-sm mt-0.5">•</span>
-                        <span className="text-slate-200 font-medium text-sm leading-relaxed">
-                          {strength}
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </div>
+              <StrengthsCard strengths={state.analysis.strengths} />
 
-              <div className="feature-card-orange group">
-                <div className="bg-orange-500/20 icon-container-lg mx-auto mb-3 group-hover:bg-orange-400/30 transition-colors">
-                  <span className="text-orange-300 text-xl">⚡</span>
-                </div>
-                <h4 className="text-orange-300 text-sm uppercase tracking-wide mb-3">
-                  Améliorations principales
-                </h4>
-                <div className="space-y-2 text-left">
-                  {state.analysis.improvements
-                    .slice(0, 3)
-                    .map((improvement, index) => (
-                      <div key={index} className="list-item-orange">
-                        <span className="text-orange-400 text-sm mt-0.5">
-                          •
-                        </span>
-                        <span className="text-slate-200 font-medium text-sm leading-relaxed">
-                          {improvement}
-                        </span>
-                      </div>
-                    ))}
-                </div>
-              </div>
+              <ImprovementsCard improvements={state.analysis.improvements} />
             </div>
 
             {/* Card: Résumé exécutif */}
-            <div className="section-card group">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="icon-container bg-purple-500/20">
-                  <span className="text-purple-300 text-lg">📋</span>
-                </div>
-                <h4 className="text-xl font-bold text-white">
-                  Résumé exécutif
-                </h4>
-              </div>
-              <div className="summary-box">
-                <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
-                  {state.analysis.summary}
-                </p>
-              </div>
-            </div>
+            <SummaryCard summary={state.analysis.summary} />
 
             {/* Card: Indicateurs de performance */}
             <div className="section-card group">
@@ -212,28 +162,7 @@ function App() {
                 </h2>
               </div>
               <div className="grid gap-4">
-                <div className="info-box-cyan group/item">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg text-cyan-400">🎯</span>
-                    <h3 className="text-cyan-300 font-semibold">
-                      Actions à entreprendre
-                    </h3>
-                  </div>
-                  <div className="space-y-2">
-                    {(
-                      state.analysis.actionItems || [
-                        "Optimiser le placement des mots-clés pour un meilleur score ATS",
-                        "Enrichir le contenu avec des réalisations quantifiables",
-                        "Considérer la terminologie spécifique au secteur",
-                      ]
-                    ).map((item, index) => (
-                      <div className="list-item-cyan" key={index}>
-                        <span className="text-cyan-400">•</span>
-                        <span>{item}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+               
 
                 <div className="info-box-emerald group/item">
                   <div className="flex items-center gap-3 mb-2">
