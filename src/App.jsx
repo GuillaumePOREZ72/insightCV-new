@@ -1,5 +1,6 @@
 import { METRIC_CONFIG } from "../constants";
 import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
+import Header from "./components/layout/Header";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -8,16 +9,9 @@ function App() {
   return (
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8 flex items-center justify-center">
       <div className="max-w-5xl mx-auto w-full">
-        {/* ==================== EN-TÊTE ==================== */}
-        <div className="text-center mb-6">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-cyan-300 via-teal-300 to-sky-300 bg-clip-text text-transparent mb-4">
-            CVBoost
-          </h1>
-          <p className="text-slate-300 text-sm sm:text-base">
-            Téléchargez votre CV PDF et obtenez un retour instantané par IA
-          </p>
-        </div>
-
+        {/* ==================== EN-TÊTE ====================  */}
+        <Header />
+        
         {/* ==================== AFFICHAGE ERREUR ==================== */}
         {state.error && (
           <div className="max-w-2xl mx-auto mb-6">
