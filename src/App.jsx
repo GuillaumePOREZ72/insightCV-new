@@ -11,6 +11,7 @@ import ImprovementsCard from "./components/analysis/ImprovementsCard";
 import ActionsCard from "./components/analysis/ActionsCard";
 import ProTipsCard from "./components/analysis/ProTipsCard";
 import ATSInfoCard from "./components/analysis/ATSInfoCard";
+import ScoreCard from "./components/analysis/ScoreCard";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -42,67 +43,7 @@ function App() {
             <FileCard fileName="{state.uploadedFile.name}" onReset={reset} />
 
             {/* Card: Score global */}
-            <div className="score-card">
-              <div className="text-center mb-6">
-                <div className="flex items-center justify-center gap-2 mb-3">
-                  <span className="text-2xl">🏆</span>
-                  <h2 className="text-2xl sm:text-3xl font-bold text-white">
-                    Score global
-                  </h2>
-                </div>
-                <div className="relative">
-                  <p className="text-6xl sm:text-8xl font-extrabold text-cyan-400 drop-shadow-lg">
-                    {state.analysis.overallScore || "7"}
-                  </p>
-                </div>
-                <div
-                  className={`inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full ${
-                    parseInt(state.analysis.overallScore) >= 8
-                      ? "score-status-excellent"
-                      : parseInt(state.analysis.overallScore) >= 6
-                      ? "score-status-good"
-                      : "score-status-improvement"
-                  }`}
-                >
-                  <span>
-                    {parseInt(state.analysis.overallScore) >= 8
-                      ? "🌟"
-                      : parseInt(state.analysis.overallScore) >= 6
-                      ? "⭐"
-                      : "📈"}
-                  </span>
-                  <span className="font-semibold text-lg">
-                    {parseInt(state.analysis.overallScore) >= 8
-                      ? "Excellent"
-                      : parseInt(state.analysis.overallScore) >= 6
-                      ? "Bon"
-                      : "À améliorer"}
-                  </span>
-                </div>
-              </div>
-              <div className="progress-bar">
-                <div
-                  className={`
-                  h-full transition-all duration-1000 ease-out shadow-sm ${
-                    parseInt(state.analysis.overallScore) >= 8
-                      ? "progress-excellent"
-                      : parseInt(state.analysis.overallScore) >= 6
-                      ? "progress-good"
-                      : "progress-improvement"
-                  }
-                  `}
-                  style={{
-                    width: `${
-                      (parseInt(state.analysis.overallScore) / 10) * 100
-                    }%`,
-                  }}
-                ></div>
-              </div>
-              <p className="text-slate-400 text-sm mt-3 text-center font-medium">
-                Score basé sur la qualité du contenu, la mise en forme et
-                l'utilisation des mots-clés
-              </p>
-            </div>
+            <ScoreCard score={state.analysis.overallScore} />
 
             {/* Card: Points forts et Améliorations */}
             <div className="grid sm:grid-cols-2 gap-4">
