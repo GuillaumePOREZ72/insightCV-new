@@ -2,6 +2,7 @@ import { METRIC_CONFIG } from "../constants";
 import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
 import Header from "./components/layout/Header";
 import LoadingSpinner from "./components/common/LoadingSpinner";
+import ErrorMessage from "./components/common/ErrorMessage";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -14,25 +15,7 @@ function App() {
         <Header />
 
         {/* ==================== AFFICHAGE ERREUR ==================== */}
-        {state.error && (
-          <div className="max-w-2xl mx-auto mb-6">
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 backdrop-blur-sm">
-              <div className="flex items-start gap-3">
-                <span className="text-2xl">❌</span>
-                <div>
-                  <h3 className="text-red-400 font-bold mb-1">Erreur</h3>
-                  <p className="text-slate-200 text-sm">{state.error}</p>
-                  <button
-                    onClick={reset}
-                    className="mt-3 text-red-400 hover:text-red-300 text-sm font-medium"
-                  >
-                    Réessayer
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
+        {state.error && <ErrorMessage message={state.error} onRetry={reset} />}
 
         {/* ==================== ZONE DE TÉLÉCHARGEMENT ==================== */}
         {!state.uploadedFile && (
@@ -66,7 +49,9 @@ function App() {
         )}
 
         {/* ==================== ÉCRAN DE CHARGEMENT ==================== */}
-        <LoadingSpinner/>
+        {state.isLoading && (
+          <LoadingSpinner message="Analyse de votre CV en cours" />
+        )}
 
         {/* ==================== RÉSULTATS DE L'ANALYSE ==================== */}
         {hasResults && (

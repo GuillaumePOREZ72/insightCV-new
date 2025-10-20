@@ -7,7 +7,7 @@
  */
 
 export default function LoadingSpinner({
-  message = "Analyse de votre CV en cours",
+  message = "Chargement en cours",
   description = "Veuillez patienter pendant que l'IA examine votre CV...",
 }) {
   return (
