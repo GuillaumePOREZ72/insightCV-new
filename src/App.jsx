@@ -8,6 +8,9 @@ import FileCard from "./components/upload/FileCard";
 import SummaryCard from "./components/analysis/SummaryCard";
 import StrengthsCard from "./components/analysis/StrengthsCard";
 import ImprovementsCard from "./components/analysis/ImprovementsCard";
+import ActionsCard from "./components/analysis/ActionsCard";
+import ProTipsCard from "./components/analysis/ProTipsCard";
+import ATSInfoCard from "./components/analysis/ATSInfoCard";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -104,7 +107,6 @@ function App() {
             {/* Card: Points forts et Améliorations */}
             <div className="grid sm:grid-cols-2 gap-4">
               <StrengthsCard strengths={state.analysis.strengths} />
-
               <ImprovementsCard improvements={state.analysis.improvements} />
             </div>
 
@@ -162,30 +164,8 @@ function App() {
                 </h2>
               </div>
               <div className="grid gap-4">
-               
-
-                <div className="info-box-emerald group/item">
-                  <div className="flex items-center gap-3 mb-2">
-                    <span className="text-lg">💡</span>
-                    <h3 className="text-emerald-300 font-semibold">
-                      Conseils de pro
-                    </h3>
-                  </div>
-                  <div className="space-y-2">
-                    {(
-                      state.analysis.proTips || [
-                        "Utiliser des verbes d'action pour commencer les puces",
-                        "Garder les descriptions concises et percutantes",
-                        "Adapter les mots-clés aux descriptions de poste spécifiques",
-                      ]
-                    ).map((tip, index) => (
-                      <div key={index} className="list-item-emerald">
-                        <span className="text-emerald-400">•</span>
-                        <span>{tip}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                <ActionsCard actions={state.analysis.actionItems} />
+                <ProTipsCard tips={state.analysis.proTips} />
               </div>
             </div>
 
@@ -200,26 +180,7 @@ function App() {
                 </h2>
               </div>
 
-              <div className="info-box-violet mb-4">
-                <div className="flex items-start gap-3 mb-3">
-                  <div>
-                    <h3 className="text-violet-300 font-semibold mb-2">
-                      Qu'est-ce qu'un ATS ?
-                    </h3>
-                    <p className="text-slate-200 text-sm leading-relaxed">
-                      <strong className="text-violet-300">
-                        Les systèmes de suivi des candidatures (ATS)
-                      </strong>{" "}
-                      sont des outils logiciels utilisés par 75% des employeurs
-                      pour filtrer automatiquement les CV avant examen humain.
-                      Ces systèmes recherchent des mots-clés, une mise en forme
-                      appropriée et des qualifications pertinentes pour classer
-                      les candidats. Si votre CV n'est pas compatible ATS, il
-                      pourrait ne jamais atteindre un recruteur humain.
-                    </p>
-                  </div>
-                </div>
-              </div>
+              <ATSInfoCard />
 
               <div className="info-box-violet">
                 <div className="flex items-center gap-3 mb-3">
