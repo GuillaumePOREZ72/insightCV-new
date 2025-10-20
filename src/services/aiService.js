@@ -8,6 +8,7 @@ export class AIService {
 
   /**
    * Vérifie que le provider IA est disponible
+   * @returns {boolean} true si l'IA est prête
    */
   isReady() {
     return !!this.aiProvider?.chat;
@@ -17,6 +18,7 @@ export class AIService {
    * Parse la réponse JSON de l'IA (gère les cas où le JSON est enrobé de texte)
    * @param {string} response - Réponse brute de l'IA
    * @returns {Object} Objet JSON parsé
+   * @throws {Error} si le parsing échoue
    */
   parseResponse(response) {
     try {
@@ -31,10 +33,16 @@ export class AIService {
 
       // Validation basique
       if (!parsed.overallScore && !parsed.error) {
-        throw new Error("Structure de réponse invalide");
+        throw new Error(
+          `Structure de réponse invalide. Reçu: ${JSON.stringify(
+            parsed
+          ).substring(0, 100)}...`
+        );
       }
+
+      return parsed;
     } catch (error) {
-      throw new Error(`Echec du parsing de la réponse IA : ${error.message}`);
+      throw new Error(`Échec du parsing de la réponse IA : ${error.message}`);
     }
   }
 
@@ -43,11 +51,12 @@ export class AIService {
    * @param {string} resumeText - Texte du CV
    * @param {string} prompt - Template du prompt
    * @returns {Promise<Object>} Résultat de l'analyse
+   * @throws {Error} Si l'analyse échoue
    */
   async analyzeResume(resumeText, prompt) {
     if (!this.isReady()) {
       throw new Error(
-        "Le service IA n'est pas disponnible. Réessayez dans quelques secondes."
+        "Le service IA n'est pas disponible. Réessayez dans quelques secondes."
       );
     }
 
@@ -83,7 +92,7 @@ export class AIService {
 
       return result;
     } catch (error) {
-      // Erreurs réseau ou tiemout
+      // Erreurs réseau ou timeout
       if (
         error.message.includes("network") ||
         error.message.includes("timeout")

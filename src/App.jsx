@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import constants, { buildPresenceChecklist, METRIC_CONFIG } from "../constants";
-import * as pdfjsLib from "pdfjs-dist";
-import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min?url";
-pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
+import { aiService } from "./services/aiService";
+import { pdfService } from "./services/pdfService";
 
 function App() {
   const [aiReady, setAiReady] = useState(false);
@@ -11,10 +10,11 @@ function App() {
   const [analysis, setAnalysis] = useState(null);
   const [, setResumeText] = useState("");
   const [presenceChecklist, setPresenceChecklist] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (window.puter?.ai?.chat) {
+      if (aiService.isReady()) {
         setAiReady(true);
         clearInterval(interval);
       }
@@ -22,76 +22,31 @@ function App() {
     return () => clearInterval(interval);
   }, []);
 
-  const extractPDFText = async (file) => {
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    const texts = await Promise.all(
-      Array.from({ length: pdf.numPages }, (_, i) =>
-        pdf
-          .getPage(i + 1)
-          .then((page) =>
-            page
-              .getTextContent()
-              .then((tc) => tc.items.map((i) => i.str).join(" "))
-          )
-      )
-    );
-    return texts.join("\n").trim();
-  };
-
-  const parseJSONResponse = (reply) => {
-    try {
-      const match = reply.match(/\{[\s\S]*\}/);
-      const parsed = match ? JSON.parse(match[0]) : {};
-      if (!parsed.overallScore && !parsed.error) {
-        throw new Error("Réponse IA invalide");
-      }
-      return parsed;
-    } catch (error) {
-      throw new Error(`Échec de l'analyse de la réponse IA : ${error.message}`);
-    }
-  };
-
-  const analyzeResume = async (text) => {
-    const prompt = constants.ANALYZE_RESUME_PROMPT.replace(
-      "{{DOCUMENT_TEXT}}",
-      text
-    );
-    const response = await window.puter.ai.chat(
-      [
-        { role: "system", content: "Vous êtes un expert en révision de CV..." },
-        { role: "user", content: prompt },
-      ],
-      {
-        model: "gpt-4o",
-      }
-    );
-    const result = parseJSONResponse(
-      typeof response === "string" ? response : response.message?.content || ""
-    );
-    if (result.error) throw new Error(result.error);
-    return result;
-  };
-
   const handleFileUpload = async (e) => {
     const file = e.target.files[0];
-    if (!file || file.type !== "application/pdf") {
-      return alert("Veuillez télécharger uniquement un fichier PDF.");
+
+    if (!file) {
+      return;
     }
 
-    setUploadedFile(file);
     setIsLoading(true);
-    setAnalysis(null);
-    setResumeText("");
-    setPresenceChecklist([]);
+    setUploadedFile(file);
+    setError(null);
 
     try {
-      const text = await extractPDFText(file);
+      const text = await pdfService.extractText(file);
       setResumeText(text);
-      setPresenceChecklist(buildPresenceChecklist(text));
-      setAnalysis(await analyzeResume(text));
+
+      const checklist = buildPresenceChecklist(text);
+      setPresenceChecklist(checklist);
+
+      const result = await aiService.analyzeResume(
+        text,
+        constants.ANALYZE_RESUME_PROMPT
+      );
+      setAnalysis(result);
     } catch (error) {
-      alert(`Erreur : ${error.message}`);
+      setError(error.message);
       reset();
     } finally {
       setIsLoading(false);
@@ -103,6 +58,7 @@ function App() {
     setAnalysis(null);
     setResumeText("");
     setPresenceChecklist([]);
+    setError(null);
   };
 
   return (
@@ -117,6 +73,27 @@ function App() {
             Téléchargez votre CV PDF et obtenez un retour instantané par IA
           </p>
         </div>
+
+        {/* ==================== AFFICHAGE ERREUR ==================== */}
+        {error && (
+          <div className="max-w-2xl mx-auto mb-6">
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 backdrop-blur-sm">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">❌</span>
+                <div>
+                  <h3 className="text-red-400 font-bold mb-1">Erreur</h3>
+                  <p className="text-slate-200 text-sm">{error}</p>
+                  <button
+                    onClick={() => setError(null)}
+                    className="mt-3 text-red-400 hover:text-red-300 text-sm font-medium"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* ==================== ZONE DE TÉLÉCHARGEMENT ==================== */}
         {!uploadedFile && (

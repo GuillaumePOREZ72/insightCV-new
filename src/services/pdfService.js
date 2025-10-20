@@ -7,9 +7,12 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
  * Service d'extraction de texte depuis un PDF
  *
  * Ce service isole toute la logique PDF de React.
- * IL est testable et réutilisable indépendamment.
+ * Il est testable et réutilisable indépendamment.
  */
 export class PDFService {
+  static MAX_FILE_SIZE = 10 * 10254 * 1024;
+  static ALLOWED_MIME_TYPE = "application/pdf";
+
   constructor() {}
 
   /**
@@ -23,13 +26,13 @@ export class PDFService {
       throw new Error("Aucun fichier fourni.");
     }
 
-    if (file.type !== "application/pdf") {
+    if (file.type !== PDFService.ALLOWED_MIME_TYPE) {
       throw new Error("Le fichier doit être au format PDF");
     }
 
-    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-    if (file.size > MAX_SIZE) {
-      throw new Error("Le fichier est trop volumineux (max 10MB)");
+    if (file.size > PDFService.MAX_FILE_SIZE) {
+      const maxMB = PDFService.MAX_FILE_SIZE / (1024 * 1024);
+      throw new Error(`Le fichier est trop volumineux (max ${maxMB} MB)`);
     }
 
     return true;
@@ -42,6 +45,7 @@ export class PDFService {
    */
   async extractText(file) {
     this.validateFile(file);
+
     try {
       const arrayBuffer = await file.arrayBuffer();
       const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -68,11 +72,14 @@ export class PDFService {
   }
 
   /**
-   * Extrait le texte brut d'une page spécifique
-   * @private - Méthode interne, pas utilisée directement
+   * Extrait le texte d'une page spécifique
+   * @private
+   * @param {PDFDocumentProxy} pdf - Document PDF chargé
+   * @param {number} pageNumber - Numéro de la page (commence à 1)
+   * @returns {Promise<string>} Texte de la page
    */
   async extractPageText(pdf, pageNumber) {
-    const page = pdf.getPage(pageNumber);
+    const page = await pdf.getPage(pageNumber);
     const textContent = await page.getTextContent();
     return textContent.items.map((item) => item.str).join(" ");
   }
