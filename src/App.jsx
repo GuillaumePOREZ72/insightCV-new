@@ -3,6 +3,7 @@ import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
 import Header from "./components/layout/Header";
 import LoadingSpinner from "./components/common/LoadingSpinner";
 import ErrorMessage from "./components/common/ErrorMessage";
+import FileUploadZone from "./components/upload/FileUploadZone";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -19,33 +20,7 @@ function App() {
 
         {/* ==================== ZONE DE TÉLÉCHARGEMENT ==================== */}
         {!state.uploadedFile && (
-          <div className="upload-area">
-            <div className="upload-zone">
-              <div className="text-4xl sm:text-5xl lg:text-6xl mb-4">📄</div>
-              <h3 className="text-xl sm:text-2xl text-slate-200 mb-2">
-                Téléchargez votre CV
-              </h3>
-              <p className="text-slate-400 mb-4 sm:mb-6 text-sm sm:text-base">
-                Fichiers PDF uniquement • Analyse instantanée
-              </p>
-              <input
-                type="file"
-                accept=".pdf"
-                onChange={(e) => analyzeFile(e.target.files[0])}
-                disabled={!isReady}
-                id="file-upload"
-                className="hidden"
-              />
-              <label
-                htmlFor="file-upload"
-                className={`inline-block btn-primary ${
-                  !isReady ? "opacity-50 cursor-not-allowed" : ""
-                }`}
-              >
-                Choisir un fichier PDF
-              </label>
-            </div>
-          </div>
+          <FileUploadZone onFileSelect={analyzeFile} disabled={!isReady} />
         )}
 
         {/* ==================== ÉCRAN DE CHARGEMENT ==================== */}
@@ -57,28 +32,7 @@ function App() {
         {hasResults && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
             {/* Card: Fichier analysé */}
-            <div className="file-upload-card">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                <div className="flex items-center gap-4">
-                  <div className="icon-container-xl bg-gradient-to-br from-blue-500/20 to-cyan-500/20 border-blue-500/30">
-                    <span className="text-3xl">📄</span>
-                  </div>
-                  <div>
-                    <h3 className="text-xl font-bold text-green-500 mb-1">
-                      Analyse terminée
-                    </h3>
-                    <p className="text-slate-300 text-sm break-all">
-                      {state.uploadedFile.name}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <button onClick={reset} className="btn-secondary">
-                    🔃 Nouvelle analyse
-                  </button>
-                </div>
-              </div>
-            </div>
+            
 
             {/* Card: Score global */}
             <div className="score-card">
