@@ -1,65 +1,9 @@
-import { useState, useEffect } from "react";
-import constants, { buildPresenceChecklist, METRIC_CONFIG } from "../constants";
-import { aiService } from "./services/aiService";
-import { pdfService } from "./services/pdfService";
+import { METRIC_CONFIG } from "../constants";
+import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
 
 function App() {
-  const [aiReady, setAiReady] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [uploadedFile, setUploadedFile] = useState(null);
-  const [analysis, setAnalysis] = useState(null);
-  const [, setResumeText] = useState("");
-  const [presenceChecklist, setPresenceChecklist] = useState([]);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      if (aiService.isReady()) {
-        setAiReady(true);
-        clearInterval(interval);
-      }
-    }, 300);
-    return () => clearInterval(interval);
-  }, []);
-
-  const handleFileUpload = async (e) => {
-    const file = e.target.files[0];
-
-    if (!file) {
-      return;
-    }
-
-    setIsLoading(true);
-    setUploadedFile(file);
-    setError(null);
-
-    try {
-      const text = await pdfService.extractText(file);
-      setResumeText(text);
-
-      const checklist = buildPresenceChecklist(text);
-      setPresenceChecklist(checklist);
-
-      const result = await aiService.analyzeResume(
-        text,
-        constants.ANALYZE_RESUME_PROMPT
-      );
-      setAnalysis(result);
-    } catch (error) {
-      setError(error.message);
-      reset();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const reset = () => {
-    setUploadedFile(null);
-    setAnalysis(null);
-    setResumeText("");
-    setPresenceChecklist([]);
-    setError(null);
-  };
+  const { state, analyzeFile, reset, hasResults, isReady } =
+    useResumeAnalysis();
 
   return (
     <div className="min-h-screen bg-main-gradient p-4 sm:p-6 lg:p-8 flex items-center justify-center">
@@ -75,19 +19,19 @@ function App() {
         </div>
 
         {/* ==================== AFFICHAGE ERREUR ==================== */}
-        {error && (
+        {state.error && (
           <div className="max-w-2xl mx-auto mb-6">
             <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 backdrop-blur-sm">
               <div className="flex items-start gap-3">
                 <span className="text-2xl">❌</span>
                 <div>
                   <h3 className="text-red-400 font-bold mb-1">Erreur</h3>
-                  <p className="text-slate-200 text-sm">{error}</p>
+                  <p className="text-slate-200 text-sm">{state.error}</p>
                   <button
-                    onClick={() => setError(null)}
+                    onClick={reset}
                     className="mt-3 text-red-400 hover:text-red-300 text-sm font-medium"
                   >
-                    Fermer
+                    Réessayer
                   </button>
                 </div>
               </div>
@@ -96,7 +40,7 @@ function App() {
         )}
 
         {/* ==================== ZONE DE TÉLÉCHARGEMENT ==================== */}
-        {!uploadedFile && (
+        {!state.uploadedFile && (
           <div className="upload-area">
             <div className="upload-zone">
               <div className="text-4xl sm:text-5xl lg:text-6xl mb-4">📄</div>
@@ -109,15 +53,15 @@ function App() {
               <input
                 type="file"
                 accept=".pdf"
-                onChange={handleFileUpload}
-                disabled={!aiReady}
+                onChange={(e) => analyzeFile(e.target.files[0])}
+                disabled={!isReady}
                 id="file-upload"
                 className="hidden"
               />
               <label
                 htmlFor="file-upload"
                 className={`inline-block btn-primary ${
-                  !aiReady ? "opacity-50 cursor-not-allowed" : ""
+                  !isReady ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
                 Choisir un fichier PDF
@@ -127,7 +71,7 @@ function App() {
         )}
 
         {/* ==================== ÉCRAN DE CHARGEMENT ==================== */}
-        {isLoading && (
+        {state.isLoading && (
           <div className="p-6 sm:p-8 max-w-md mx-auto">
             <div className="text-center">
               <div className="loading-spinner"></div>
@@ -142,7 +86,7 @@ function App() {
         )}
 
         {/* ==================== RÉSULTATS DE L'ANALYSE ==================== */}
-        {analysis && uploadedFile && (
+        {hasResults && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
             {/* Card: Fichier analysé */}
             <div className="file-upload-card">
@@ -156,7 +100,7 @@ function App() {
                       Analyse terminée
                     </h3>
                     <p className="text-slate-300 text-sm break-all">
-                      {uploadedFile.name}
+                      {state.uploadedFile.name}
                     </p>
                   </div>
                 </div>
@@ -179,29 +123,29 @@ function App() {
                 </div>
                 <div className="relative">
                   <p className="text-6xl sm:text-8xl font-extrabold text-cyan-400 drop-shadow-lg">
-                    {analysis.overallScore || "7"}
+                    {state.analysis.overallScore || "7"}
                   </p>
                 </div>
                 <div
                   className={`inline-flex items-center gap-2 mt-3 px-4 py-2 rounded-full ${
-                    parseInt(analysis.overallScore) >= 8
+                    parseInt(state.analysis.overallScore) >= 8
                       ? "score-status-excellent"
-                      : parseInt(analysis.overallScore) >= 6
+                      : parseInt(state.analysis.overallScore) >= 6
                       ? "score-status-good"
                       : "score-status-improvement"
                   }`}
                 >
                   <span>
-                    {parseInt(analysis.overallScore) >= 8
+                    {parseInt(state.analysis.overallScore) >= 8
                       ? "🌟"
-                      : parseInt(analysis.overallScore) >= 6
+                      : parseInt(state.analysis.overallScore) >= 6
                       ? "⭐"
                       : "📈"}
                   </span>
                   <span className="font-semibold text-lg">
-                    {parseInt(analysis.overallScore) >= 8
+                    {parseInt(state.analysis.overallScore) >= 8
                       ? "Excellent"
-                      : parseInt(analysis.overallScore) >= 6
+                      : parseInt(state.analysis.overallScore) >= 6
                       ? "Bon"
                       : "À améliorer"}
                   </span>
@@ -211,15 +155,17 @@ function App() {
                 <div
                   className={`
                   h-full transition-all duration-1000 ease-out shadow-sm ${
-                    parseInt(analysis.overallScore) >= 8
+                    parseInt(state.analysis.overallScore) >= 8
                       ? "progress-excellent"
-                      : parseInt(analysis.overallScore) >= 6
+                      : parseInt(state.analysis.overallScore) >= 6
                       ? "progress-good"
                       : "progress-improvement"
                   }
                   `}
                   style={{
-                    width: `${(parseInt(analysis.overallScore) / 10) * 100}%`,
+                    width: `${
+                      (parseInt(state.analysis.overallScore) / 10) * 100
+                    }%`,
                   }}
                 ></div>
               </div>
@@ -239,14 +185,16 @@ function App() {
                   Points forts
                 </h4>
                 <div className="space-y-2 text-left">
-                  {analysis.strengths.slice(0, 3).map((strength, index) => (
-                    <div key={index} className="list-item-green">
-                      <span className="text-green-400 text-sm mt-0.5">•</span>
-                      <span className="text-slate-200 font-medium text-sm leading-relaxed">
-                        {strength}
-                      </span>
-                    </div>
-                  ))}
+                  {state.analysis.strengths
+                    .slice(0, 3)
+                    .map((strength, index) => (
+                      <div key={index} className="list-item-green">
+                        <span className="text-green-400 text-sm mt-0.5">•</span>
+                        <span className="text-slate-200 font-medium text-sm leading-relaxed">
+                          {strength}
+                        </span>
+                      </div>
+                    ))}
                 </div>
               </div>
 
@@ -258,7 +206,7 @@ function App() {
                   Améliorations principales
                 </h4>
                 <div className="space-y-2 text-left">
-                  {analysis.improvements
+                  {state.analysis.improvements
                     .slice(0, 3)
                     .map((improvement, index) => (
                       <div key={index} className="list-item-orange">
@@ -286,7 +234,7 @@ function App() {
               </div>
               <div className="summary-box">
                 <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
-                  {analysis.summary}
+                  {state.analysis.summary}
                 </p>
               </div>
             </div>
@@ -304,7 +252,8 @@ function App() {
               <div className="space-y-4">
                 {METRIC_CONFIG.map((cfg, i) => {
                   const value =
-                    analysis.performanceMetrics?.[cfg.key] ?? cfg.defaultValue;
+                    state.analysis.performanceMetrics?.[cfg.key] ??
+                    cfg.defaultValue;
                   return (
                     <div key={i} className="group/item">
                       <div className="flex items-center justify-between mb-2">
@@ -350,7 +299,7 @@ function App() {
                   </div>
                   <div className="space-y-2">
                     {(
-                      analysis.actionItems || [
+                      state.analysis.actionItems || [
                         "Optimiser le placement des mots-clés pour un meilleur score ATS",
                         "Enrichir le contenu avec des réalisations quantifiables",
                         "Considérer la terminologie spécifique au secteur",
@@ -373,7 +322,7 @@ function App() {
                   </div>
                   <div className="space-y-2">
                     {(
-                      analysis.proTips || [
+                      state.analysis.proTips || [
                         "Utiliser des verbes d'action pour commencer les puces",
                         "Garder les descriptions concises et percutantes",
                         "Adapter les mots-clés aux descriptions de poste spécifiques",
@@ -429,7 +378,7 @@ function App() {
                   </h3>
                 </div>
                 <div className="space-y-2">
-                  {(presenceChecklist || []).map((item, index) => (
+                  {(state.presenceChecklist || []).map((item, index) => (
                     <div
                       key={index}
                       className="flex items-start gap-2 text-slate-200"
@@ -459,7 +408,7 @@ function App() {
                 </h2>
               </div>
               <div className="flex flex-wrap gap-3 mb-4">
-                {analysis.keywords.map((k, i) => (
+                {state.analysis.keywords.map((k, i) => (
                   <span key={i} className="keyword-tag group/item">
                     {k}
                   </span>
