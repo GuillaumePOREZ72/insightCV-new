@@ -16,16 +16,19 @@ export default function MetricsCard({
 }) {
   return (
     <div className="section-card group">
+      {/* En-tête de la setion */}
       <div className="flex items-center gap-3 mb-6">
         <div className="icon-container bg-blue-500/20">
           <span className="text-cyan-300 text-lg">{icon}</span>
         </div>
         <h4 className="text-xl font-bold text-blue-400">{title}</h4>
       </div>
+
       {/* Grid des métriques */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {METRIC_CONFIG.map((metric) => {
           const value = metrics?.[metric.key] ?? metric.defaultValue;
+
           return (
             <div key={metric.key} className="metric-card group/item">
               {/* En-tête de la métrique */}
@@ -35,6 +38,7 @@ export default function MetricsCard({
                   {metric.label}
                 </h3>
               </div>
+              
               {/* Score */}
               <div className="flex items-center gap-2 mb-2">
                 {" "}

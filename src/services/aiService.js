@@ -3,6 +3,8 @@
  */
 export class AIService {
   constructor(aiProvider = window.puter?.ai) {
+    console.log(aiProvider);
+
     this.aiProvider = aiProvider;
   }
 
@@ -92,10 +94,11 @@ export class AIService {
 
       return result;
     } catch (error) {
+      const errorMessage = error?.message || String(error) || "Erreur inconnue";
       // Erreurs réseau ou timeout
       if (
-        error.message.includes("network") ||
-        error.message.includes("timeout")
+        errorMessage.includes("network") ||
+        errorMessage.includes("timeout")
       ) {
         throw new Error("Problème de connexion. Vérifiez votre réseau.");
       }

@@ -1,4 +1,3 @@
-import { METRIC_CONFIG } from "../constants";
 import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
 import Header from "./components/layout/Header";
 import LoadingSpinner from "./components/common/LoadingSpinner";
@@ -12,6 +11,7 @@ import ActionsCard from "./components/analysis/ActionsCard";
 import ProTipsCard from "./components/analysis/ProTipsCard";
 import ATSInfoCard from "./components/analysis/ATSInfoCard";
 import ScoreCard from "./components/analysis/ScoreCard";
+import MetricsCard from "./components/analysis/MetricsCard";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -40,7 +40,7 @@ function App() {
         {hasResults && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
             {/* Card: Fichier analysé */}
-            <FileCard fileName="{state.uploadedFile.name}" onReset={reset} />
+            <FileCard fileName={state.uploadedFile.name} onReset={reset} />
 
             {/* Card: Score global */}
             <ScoreCard score={state.analysis.overallScore} />
@@ -55,7 +55,7 @@ function App() {
             <SummaryCard summary={state.analysis.summary} />
 
             {/* Card: Indicateurs de performance */}
-            
+            <MetricsCard metrics={state.analysis.performanceMetrics} />
 
             {/* Card: Informations sur le CV (Actions et Conseils) */}
             <div className="section-card group">

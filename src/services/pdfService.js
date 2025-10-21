@@ -10,7 +10,7 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
  * Il est testable et réutilisable indépendamment.
  */
 export class PDFService {
-  static MAX_FILE_SIZE = 10 * 10254 * 1024;
+  static MAX_FILE_SIZE = 10 * 1024 * 1024;
   static ALLOWED_MIME_TYPE = "application/pdf";
 
   constructor() {}
