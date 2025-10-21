@@ -86,59 +86,11 @@ function App() {
 
               <ATSInfoCard />
 
-              <div className="info-box-violet">
-                <div className="flex items-center gap-3 mb-3">
-                  <span className="text-violet-400 text-lg">🤖</span>
-                  <h3 className="text-lg font-semibold text-violet-300">
-                    Liste de compatibilité ATS
-                  </h3>
-                </div>
-                <div className="space-y-2">
-                  {(state.presenceChecklist || []).map((item, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-2 text-slate-200"
-                    >
-                      <span
-                        className={`${
-                          item.present ? "text-emerald-400" : "text-red-400"
-                        }`}
-                      >
-                        {item.present ? "✅" : "❌"}
-                      </span>
-                      <span>{item.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+             
             </div>
 
             {/* Card: Mots-clés recommandés */}
-            <div className="section-card group">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="icon-container bg-blue-500/20">
-                  <span className="text-lg">🔑</span>
-                </div>
-                <h2 className="text-blue-400 font-bold text-xl">
-                  Mots-clés recommandés
-                </h2>
-              </div>
-              <div className="flex flex-wrap gap-3 mb-4">
-                {state.analysis.keywords.map((k, i) => (
-                  <span key={i} className="keyword-tag group/item">
-                    {k}
-                  </span>
-                ))}
-              </div>
-              <div className="info-box-blue">
-                <p className="text-slate-300 text-sm leading-relaxed flex items-start gap-2">
-                  <span className="text-lg mt-0.5">💡</span>
-                  Pensez à incorporer ces mots-clés naturellement dans votre CV
-                  pour améliorer la compatibilité ATS et augmenter vos chances
-                  d'être remarqué par les recruteurs.
-                </p>
-              </div>
-            </div>
+            
           </div>
         )}
       </div>
