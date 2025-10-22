@@ -1,19 +1,40 @@
 import { METRIC_CONFIG } from "../../../constants";
 
 /**
+ * Config d'une métriqye individuelle
+ */
+interface MetricConfig {
+  key: string;
+  icon: string;
+  label: string;
+  defaultValue: number;
+  colorClass: string;
+  shadowClass: string;
+}
+
+/**
+ * Props du composant MetricsCard
+ */
+interface MetricsCardProps {
+  metrics?: Record<string, number>;
+  title?: string;
+  icon?: string;
+}
+
+const typedConfig = METRIC_CONFIG as MetricConfig[];
+
+/**
  * Composant MetricsCard - Affiche les indicateurs de performance
- *
- * @param {Object} props
  * @param {Object} props.metrics - Objet contenant les scores (performanceMetrics)
- * @param {string} [props.title="Indicateurs de performance"] - Titre de la section
- * @param {string} [props.icon="📊"] - Icône de la section
+ * @param {string} props.title="Indicateurs de performance" - Titre de la section
+ * @param {string} props.icon - Icône de la section
  */
 
 export default function MetricsCard({
   metrics = {},
   title = "Indicateurs de performance",
   icon = "📊",
-}) {
+}: MetricsCardProps) {
   return (
     <div className="section-card group">
       {/* En-tête de la setion */}
@@ -26,7 +47,7 @@ export default function MetricsCard({
 
       {/* Grid des métriques */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {METRIC_CONFIG.map((metric) => {
+        {typedConfig.map((metric) => {
           const value = metrics?.[metric.key] ?? metric.defaultValue;
 
           return (
@@ -38,7 +59,7 @@ export default function MetricsCard({
                   {metric.label}
                 </h3>
               </div>
-              
+
               {/* Score */}
               <div className="flex items-center gap-2 mb-2">
                 {" "}

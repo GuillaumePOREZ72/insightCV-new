@@ -1,7 +1,11 @@
+interface ActionsCardProps {
+  actions?: string[];
+  title?: string;
+  icon?: string;
+}
+
 /**
  * Composant ActionsCard - Affiche les actions à entreprendre
- *
- * @param {Object} props
  * @param {string[]} props.actions - Liste des actions
  * @param {string} [props.title="Actions à entreprendre"] - Titre
  * @param {string} [props.icon="🎯"] - Icône
@@ -11,7 +15,7 @@ export default function ActionsCard({
   actions = [],
   title = "Actions à entreprendre",
   icon = "🎯",
-}) {
+}: ActionsCardProps) {
   const DEFAULT_ACTIONS = [
     "Optimiser le placement des mots-clés pour un meilleur score ATS",
     "Enrichir le contenu avec des réalisations quantifiables",

@@ -1,17 +1,24 @@
 /**
+ * Interface du composnat SummaryCard
+ */
+interface SummaryCard {
+  summary: string;
+  title?: string;
+  icon?: string;
+}
+
+/**
  * Composant SummaryCard - Affiche le résumé exécutif de l'analyse
- *
- * @param {Object} props
  * @param {string} props.summary - Texte du résumé
- * @param {string} [props.title="Résumé exécutif"] - Titre de la section
- * @param {string} [props.icon="📋"] - Icône à afficher
+ * @param {string} props.title="Résumé exécutif" - Titre de la section
+ * @param {string} props.icon="📋" - Icône à afficher
  */
 
 export default function SummaryCard({
   summary,
   title = "Résumé exécutif",
   icon = "📋",
-}) {
+}: SummaryCard) {
   return (
     <div className="section-card group">
       <div className="flex items-center gap-3 mb-4">
