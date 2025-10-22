@@ -1,13 +1,22 @@
+interface ErrorMessageProps {
+  message: string;
+  onRetry: () => void;
+  title?: string;
+}
+
 /**
- * Composant ErrorMessage - Affichage des erreurs
+ * Composant ErrorMessage - Affichage des erreurs avec possibilité de retry
  *
- * @param {Object} props
- * @param {string} props.message - Message d'erreur à afficher
- * @param {Function} props.onRetry - Callback au clic sur "Réessayer"
- * @param {string} [props.title="Erreur"] - Titre de l'erreur
+ * @param props.message - Message d'erreur à afficher
+ * @param props.onRetry - Callback au clic sur "Réessayer"
+ * @param props.title - Titre de l'erreur (défaut: "Erreur")
  */
 
-export default function ErrorMessage({ message, onRetry, title = "Erreur" }) {
+export default function ErrorMessage({
+  message,
+  onRetry,
+  title = "Erreur",
+}: ErrorMessageProps) {
   return (
     <div>
       <div className="max-w-2xl mx-auto mb-6">

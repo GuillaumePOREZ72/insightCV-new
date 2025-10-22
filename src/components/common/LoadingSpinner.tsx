@@ -6,10 +6,15 @@
  * @param {string} props.description - Description optionnelle
  */
 
+interface LoadingSpinnerProps {
+  message?: string;
+  description?: string;
+}
+
 export default function LoadingSpinner({
   message = "Chargement en cours",
   description = "Veuillez patienter pendant que l'IA examine votre CV...",
-}) {
+}: LoadingSpinnerProps) {
   return (
     <div className="p-6 sm:p-8 max-w-md mx-auto">
       <div className="text-center">
