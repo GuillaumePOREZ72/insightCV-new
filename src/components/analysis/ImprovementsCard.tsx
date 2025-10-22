@@ -1,12 +1,18 @@
+interface ImprovementsCardProps {
+  improvements: string[];
+  maxItems?: number;
+}
+
 /**
  * Composant ImprovementsCard - Affiche les améliorations suggérées
- *
- * @param {Object} props
  * @param {string[]} props.improvements - Liste des points forts
  * @param {number} [props.maxItems=3] - Nombre maximum d'items à afficher
  */
 
-export default function ImprovementsCard({ improvements, maxItems = 3 }) {
+export default function ImprovementsCard({
+  improvements,
+  maxItems = 3,
+}: ImprovementsCardProps) {
   return (
     <div>
       {" "}
