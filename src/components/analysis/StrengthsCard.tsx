@@ -1,12 +1,18 @@
+interface StrengthsCardProps {
+  strengths: string[];
+  maxItems?: number;
+}
+
 /**
  * Composant StrengthsCard - Affiche les points forts du CV
- *
- * @param {Object} props
  * @param {string[]} props.strengths - Liste des points forts
  * @param {number} [props.maxItems=3] - Nombre maximum d'items à afficher
  */
 
-export default function StrengthsCard({ strengths, maxItems = 3 }) {
+export default function StrengthsCard({
+  strengths,
+  maxItems = 3,
+}: StrengthsCardProps) {
   return (
     <div>
       {" "}
