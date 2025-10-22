@@ -1,14 +1,9 @@
 /**
  * Composant ATSInfoCard - Affiche les informations sur l'ATS
- *
- * @param {Object} props
  * @param {string} [props.title="Qu'est-ce qu'un ATS ?"] - Titre
  * @param {React.ReactNode} [props.content] - Contenu personnalisable
  */
-export default function ATSInfoCard({
-  title = "Qu'est-ce qu'un ATS?",
-  content,
-}) {
+export default function ATSInfoCard({ title = "Qu'est-ce qu'un ATS?" }) {
   const DEFAULT_CONTENT = (
     <>
       <strong className="text-violet-300">
@@ -30,7 +25,7 @@ export default function ATSInfoCard({
           <div>
             <h3 className="text-violet-300 font-semibold mb-2">{title}</h3>
             <p className="text-slate-200 text-sm leading-relaxed">
-              {content || DEFAULT_CONTENT}
+              {DEFAULT_CONTENT}
             </p>
           </div>
         </div>

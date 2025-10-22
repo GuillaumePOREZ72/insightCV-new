@@ -1,12 +1,15 @@
+interface FileCardProps {
+  fileName: string;
+  onReset: () => void;
+}
+
 /**
  * Composant FileCard - Affiche le fichier analysé
- *
- * @param {Object} props
  * @param {string} props.fileName - Nom du fichier uploadé
  * @param {Function} props.onReset - Callback pour recommencer une analyse
  */
 
-export default function FileCard({ fileName, onReset }) {
+export default function FileCard({ fileName, onReset }: FileCardProps) {
   return (
     <div className="file-upload-card">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">

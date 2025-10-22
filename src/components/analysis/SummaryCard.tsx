@@ -1,7 +1,7 @@
 /**
  * Interface du composnat SummaryCard
  */
-interface SummaryCard {
+interface SummaryCardProps {
   summary: string;
   title?: string;
   icon?: string;
@@ -18,7 +18,7 @@ export default function SummaryCard({
   summary,
   title = "Résumé exécutif",
   icon = "📋",
-}: SummaryCard) {
+}: SummaryCardProps) {
   return (
     <div className="section-card group">
       <div className="flex items-center gap-3 mb-4">

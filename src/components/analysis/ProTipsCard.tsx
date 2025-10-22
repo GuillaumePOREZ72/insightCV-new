@@ -1,17 +1,21 @@
+interface ProTipsCardProps {
+  tips: string[];
+  title?: string;
+  icon?: string;
+}
+
 /**
  * Composant ProTipsCard - Affiche les conseils professionnels
- *
- * @param {Object} props
  * @param {string[]} props.tips - Liste des conseils
  * @param {string} [props.title="Conseils de pro"] - Titre
  * @param {string} [props.icon="💡"] - Icône
  */
 
 export default function ProTipsCard({
-  tips = [],
-  title = "Conseils de pro",
+  tips,
+  title = "Conseils d'expert",
   icon = "💡",
-}) {
+}: ProTipsCardProps) {
   const DEFAULT_TIPS = [
     "Utiliser des verbes d'action pour commencer les puces",
     "Garder les descriptions concises et percutantes",

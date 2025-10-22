@@ -1,7 +1,14 @@
+interface KeywordsCardProps {
+  keywords: string[];
+  title?: string;
+  icon?: string;
+  tip: string
+
+
+}
+
 /**
  * Composant KeywordsCard - Affiche les mots-clés recommandés
- *
- * @param {Object} props
  * @param {string[]} props.keywords - Liste des mots-clés
  * @param {string} [props.title="Mots-clés recommandés"] - Titre
  * @param {string} [props.icon="🔑"] - Icône
@@ -13,7 +20,7 @@ export default function KeywordCard({
   title = "Mots-clés recommandés",
   icon = "🔑",
   tip,
-}) {
+}: KeywordsCardProps) {
   const DEFAULT_TIP =
     "Pensez à incorporer ces mots-clés naturellement dans votre CV pour améliorer la compatibilité ATS et augmenter vos chances d'être remarqué par les recruteurs.";
   return (

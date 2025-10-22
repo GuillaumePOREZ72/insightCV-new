@@ -1,17 +1,27 @@
+interface ChecklistItem {
+  label: string;
+  present: boolean;
+}
+
+interface ATSChecklistCardProps {
+  items: ChecklistItem[];
+  title?: string;
+  icon?: string;
+}
+
 /**
  * Composant ATSChecklistCard - Affiche la checklist de compatibilité ATS
  *
- * @param {Object} props
  * @param {Array<{label: string, present: boolean}>} props.checklist - Liste des éléments ATS
  * @param {string} [props.title="Liste de compatibilité ATS"] - Titre
  * @param {string} [props.icon="🤖"] - Icône
  */
 
 export default function ATSChecklistCard({
-  checklist = [],
+  items,
   title = "Liste de compatibiloté ATS",
   icon = "🤖",
-}) {
+}: ATSChecklistCardProps) {
   return (
     <div className="info-box-violet">
       <div className="flex items-center gap-3 mb-3">
@@ -20,7 +30,7 @@ export default function ATSChecklistCard({
       </div>
       {/* Liste de la checklist */}
       <div className="space-y-2">
-        {checklist.map((item, index) => (
+        {items.map((item, index) => (
           <div key={index} className="flex items-start gap-2 text-slate-200">
             <span
               className={`${
