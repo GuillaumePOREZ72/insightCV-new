@@ -12,6 +12,8 @@ import ProTipsCard from "./components/analysis/ProTipsCard";
 import ATSInfoCard from "./components/analysis/ATSInfoCard";
 import ScoreCard from "./components/analysis/ScoreCard";
 import MetricsCard from "./components/analysis/MetricsCard";
+import ATSChecklistCard from "./components/analysis/ATSChecklistCard";
+import KeywordCard from "./components/analysis/KeywordCard";
 
 function App() {
   const { state, analyzeFile, reset, hasResults, isReady } =
@@ -85,12 +87,11 @@ function App() {
               </div>
 
               <ATSInfoCard />
-
-             
+              <ATSChecklistCard checklist={state.presenceChecklist} />
             </div>
 
             {/* Card: Mots-clés recommandés */}
-            
+            <KeywordCard keywords={state.analysis.keywords} />
           </div>
         )}
       </div>

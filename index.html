@@ -10,14 +10,24 @@
     <div id="root"></div>
     <script src="https://js.puter.com/v2/"></script>
     <script>
-      // ✅ MODIFICATION : Ne pas forcer l'authentification en dev
-      window.addEventListener("load", () => {
+      // Config Puter avec authentification
+      window.addEventListener("load", async () => {
         if (window.puter) {
-          console.log(
-            "✅ Puter chargé (mode développement sans authentification)"
-          );
+          try {
+            await puter.app("CVBoost");
+            const isSignedIn = await puter.auth.isSignedIn();
+
+            if (!isSignedIn) {
+              console.log("🔐 Connexion Puter requise...");
+              await puter.auth.signiIn();
+            } else {
+              console.log("✅ Puter authentifié avec succès");
+            }
+          } catch (error) {
+            console.error("❌ Erreur d'authentification Puter:", error);
+          }
         } else {
-          console.warn("⚠️ Puter non disponible");
+          console.warn("⚠️ Puter SDK non chargé");
         }
       });
     </script>
