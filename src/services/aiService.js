@@ -3,17 +3,15 @@
  */
 export class AIService {
   constructor(aiProvider = window.puter?.ai) {
-    console.log(aiProvider);
-
     this.aiProvider = aiProvider;
   }
 
   /**
-   * Vérifie que le provider IA est disponible
+   * Vérifie que le provider IA est disponible et authentifié
    * @returns {boolean} true si l'IA est prête
    */
   isReady() {
-    return !!this.aiProvider?.chat;
+    return !!this.aiProvider?.chat && window.puter?.auth?.isSignedIn?.();
   }
 
   /**
@@ -58,26 +56,48 @@ export class AIService {
   async analyzeResume(resumeText, prompt) {
     if (!this.isReady()) {
       throw new Error(
-        "Le service IA n'est pas disponible. Réessayez dans quelques secondes."
+        "Le service IA n'est pas disponible. Connectez-vous à Puter."
       );
     }
 
-    const fullPrompt = prompt.replace("{{DOCUMENT_TEXT}}", resumeText);
-
     try {
+      const systemPrompt = `Tu es un expert RH spécialisé dans l'analyse de CV. 
+      Tu dois analyser le CV et retourner UNIQUEMENT un objet JSON valide avec cette structure exacte:
+      
+      {
+        "overallScore": number (entre 0 et 10),
+        "summary": "résumé de l'analyse en 2-3 phrases",
+        "strengths": ["point fort 1", "point fort 2", "point fort 3"],
+        "improvements": ["amélioration 1", "amélioration 2", "amélioration 3"],
+        "performanceMetrics": {
+          "formatting": number (0-10),
+          "contentQuality": number (0-10),
+          "atsCompatibility": number (0-10),
+          "keywordOptimization": number (0-10),
+          "impactMetrics": number (0-10)
+        },
+        "keywords": ["mot-clé 1", "mot-clé 2", "mot-clé 3"],
+        "actionItems": ["action 1", "action 2", "action 3"],
+        "proTips": ["conseil 1", "conseil 2", "conseil 3"]
+      }
+      
+      Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`;
+
+      const userPrompt = prompt.replace("{{DOCUMENT_TEXT}}", resumeText);
       const response = await this.aiProvider.chat(
         [
           {
             role: "system",
-            content: "Vous êtes un expert en révision de CV...",
+            content: systemPrompt,
           },
           {
             role: "user",
-            content: fullPrompt,
+            content: userPrompt,
           },
         ],
         {
-          model: "gpt-4o",
+          model: "gpt-4o-mini",
+          temperature: 0.7,
         }
       );
 
@@ -85,6 +105,10 @@ export class AIService {
         typeof response === "string"
           ? response
           : response.message?.content || "";
+
+      if (!content) {
+        throw new Error("Réponse Puter vide");
+      }
 
       const result = this.parseResponse(content);
 
@@ -94,7 +118,21 @@ export class AIService {
 
       return result;
     } catch (error) {
+      console.error("❌ Erreur Puter AI:", error);
+
       const errorMessage = error?.message || String(error) || "Erreur inconnue";
+
+      if (errorMessage.includes("Permission denied")) {
+        throw new Error(
+          "Connexion Puter requise. Rechargez la page et connectez-vous."
+        );
+      }
+
+      if (errorMessage.includes("usage-limited")) {
+        throw new Error(
+          "LImite d'utilisation Puter atteinte. Réessayez plus tard."
+        );
+      }
       // Erreurs réseau ou timeout
       if (
         errorMessage.includes("network") ||
