@@ -2,7 +2,7 @@
  * Configuration des ranges des score
  * Définit les seuils et messages pour chaque niveau
  */
-const SCORE_RANGES = [
+const SCORE_RANGES: ScoreRange[] = [
   {
     min: 8,
     label: "🎉 Excellent CV !",
@@ -23,23 +23,33 @@ const SCORE_RANGES = [
   },
 ];
 
+/* Type représentant un range de score avec ses propriétés d'affichage */
+
+interface ScoreRange {
+  min: number;
+  label: string;
+  message: string;
+  gradient: string;
+}
+
 /**
- * Détermine le statut du score
- * @param {number} score - Score de 0 à 10
- * @returns {Object} Configuration du statut (label, message, gradient)
+ * Détermine le statut du score basé sur sa valeur
+ * @param score - Score de 0 à 10
+ * @returns Configuration du statut (label, message, gradient)
  */
-function getScoreStatus(score) {
+function getScoreStatus(score: number): ScoreRange {
   const status = SCORE_RANGES.find((range) => score >= range.min);
   return status || SCORE_RANGES[SCORE_RANGES.length - 1];
 }
 
+interface ScoreCardProps {
+  score: number;
+}
 /**
  * Composant ScoreCard - Affiche le score global du CV
- *
- * @param {Object} props
  * @param {number} props.score - Score de 0 à 10
  */
-export default function ScoreCard({ score }) {
+export default function ScoreCard({ score }: ScoreCardProps) {
   const status = getScoreStatus(score);
   return (
     <div className="score-card">
@@ -62,9 +72,7 @@ export default function ScoreCard({ score }) {
           <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             {status.label}
           </h3>
-          <p className="text-slate-300 text-sm sm:text-base">{status.label}
-            
-          </p>
+          <p className="text-slate-300 text-sm sm:text-base">{status.label}</p>
         </div>
       </div>
     </div>
