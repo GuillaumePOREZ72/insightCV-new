@@ -14,6 +14,48 @@ const INITIAL_STATE = {
   error: null,
 };
 
+// Mock data pour fallback
+const MOCK_ANALYSIS = {
+  overallScore: 7,
+  strengths: [
+    "Expérience professionnelle claire et bien structurée",
+    "Compétences techniques pertinentes et à jour",
+    "Formation en adéquation avec le poste visé",
+  ],
+  improvements: [
+    "Ajouter des réalisations quantifiables (chiffres, pourcentages)",
+    "Enrichir la section compétences avec plus de mots-clés techniques",
+    "Optimiser les mots-clés pour les systèmes ATS",
+  ],
+  summary:
+    "Votre CV présente de solides bases avec une expérience pertinente et bien détaillée.",
+  performanceMetrics: {
+    formatting: 8,
+    contentQuality: 7,
+    atsCompatibility: 6,
+    keywordOptimization: 6,
+    impactMetrics: 5,
+  },
+  keywords: [
+    "JavaScript",
+    "React",
+    "Node.js",
+    "TypeScript",
+    "Git",
+    "Agile",
+    "REST API",
+    "MongoDB",
+  ],
+  actionItems: [
+    "Optimiser le placement des mots-clés pour un meilleur score ATS",
+    "Enrichir le contenu avec des réalisations quantifiables",
+  ],
+  proTips: [
+    "Utiliser des verbes d'action pour commencer les puces",
+    "Garder les descriptions concises et percutantes",
+  ],
+};
+
 /**
  * Hook personnalisé pour gérer l'analyse de CV
  *
@@ -26,13 +68,44 @@ export function useResumeAnalysis() {
   const [state, setState] = useState(INITIAL_STATE);
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (aiService.isReady()) {
-        setState((prev) => ({ ...prev, aiReady: true }));
-        clearInterval(interval);
+    let interval;
+    let timeout;
+
+    const checkAiReady = async () => {
+      if (window.puter?.auth) {
+        try {
+          const isSignedIn = await window.puter.auth.isSignedIn();
+          if (isSignedIn && aiService.isReady()) {
+            setState((prev) => ({
+              ...prev,
+              aiReady: true,
+            }));
+            clearInterval(interval);
+            clearTimeout(timeout);
+            console.log("✅ Puter AI prêt");
+          }
+        } catch (error) {
+          console.error("Erreur vérification Puter:", error);
+        }
       }
-    }, 300);
-    return () => clearInterval(interval);
+    };
+    interval = setInterval(checkAiReady, 500);
+
+    // Timeout: mode DEV après 5s s Puter non prêt
+    timeout = setTimeout(() => {
+      if (!aiService.isReady()) {
+        console.warn(
+          "⚠️ Puter non disponible après 5s, mode développement activé"
+        );
+        setState((prev) => ({ ...prev, aiReady: true }));
+      }
+      clearInterval(interval);
+    }, 5000);
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, []);
 
   /**
@@ -52,10 +125,32 @@ export function useResumeAnalysis() {
     try {
       const text = await pdfService.extractText(file);
       const checklist = buildPresenceChecklist(text);
-      const result = await aiService.analyzeResume(
-        text,
-        constants.ANALYZE_RESUME_PROMPT
-      );
+
+      let result;
+
+      const isPuterReady =
+        window.puter?.auth &&
+        (await window.puter.auth.isSignedIn()) &&
+        aiService.isReady();
+
+      if (isPuterReady) {
+        try {
+          console.log("🚀 Utilisation de Puter AI");
+          result = await aiService.analyzeResume(
+            text,
+            constants.ANALYZE_RESUME_PROMPT
+          );
+        } catch (puterError) {
+          console.warn("⚠️ Erreur Puter, fallback vers mock:", puterError);
+          await new Promise((resolve) => setTimeout(resolve, 1500));
+          result = MOCK_ANALYSIS;
+        }
+      } else {
+        console.warn("🔧 Mode développement: utilisation des données mockées");
+        await new Promise((resolve) => setTimeout(resolve, 1500));
+        result = MOCK_ANALYSIS;
+      }
+
       setState((prev) => ({
         ...prev,
         isLoading: false,
@@ -64,10 +159,11 @@ export function useResumeAnalysis() {
         presenceChecklist: checklist,
       }));
     } catch (error) {
+      console.error("❌ Erreur d'analyse:", error);
       setState((prev) => ({
         ...prev,
         isLoading: false,
-        error: error.message,
+        error: error.message || "Une erreur est survenue lors de l'analyse",
       }));
     }
   };

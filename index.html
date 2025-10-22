@@ -11,20 +11,24 @@
     <script src="https://js.puter.com/v2/"></script>
     <script>
       // Config Puter avec authentification
-      window.addEventListener("load", async () => {
+      window.addEventListener("load", () => {
         if (window.puter) {
-          try {
-            await puter.app("CVBoost");
-            const isSignedIn = await puter.auth.isSignedIn();
+          console.log("✅ Puter SDK chargé");
 
-            if (!isSignedIn) {
-              console.log("🔐 Connexion Puter requise...");
-              await puter.auth.signiIn();
-            } else {
-              console.log("✅ Puter authentifié avec succès");
+          if (window.puter.auth) {
+            try {
+              const isSignedIn = window.puter.auth.isSignedIn();
+
+              if (isSignedIn) {
+                console.log("✅ Utilisateur Puter connecté");
+              } else {
+                console.log(
+                  "ℹ️ Mode Puter anonyme (limites d'usage appliquées)"
+                );
+              }
+            } catch (error) {
+              console.log("ℹ️ Puter en mode public");
             }
-          } catch (error) {
-            console.error("❌ Erreur d'authentification Puter:", error);
           }
         } else {
           console.warn("⚠️ Puter SDK non chargé");
