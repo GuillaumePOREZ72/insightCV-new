@@ -12,7 +12,7 @@ interface HeaderProps {
 }
 
 export default function Header({
-  title = "CVBoost",
+  title = "InsightCV",
   subtitle = "Téléchargez votre CV PDF et obtenez un retour instantané par IA",
 }: HeaderProps) {
   return (
