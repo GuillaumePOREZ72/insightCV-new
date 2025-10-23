@@ -1,4 +1,4 @@
-# 🎯 CVBoost - Analyseur de CV par IA
+# 🎯 InsightCV - Analyseur de CV par IA
 
 Application web React qui analyse automatiquement les CVs en PDF et fournit des recommandations détaillées via IA.
 
@@ -25,7 +25,7 @@ Application web React qui analyse automatiquement les CVs en PDF et fournit des 
 
 ```bash
 # Cloner le repo
-git clone https://github.com/votre-username/cvboost.git
+git clone https://github.com/votre-username/insightCV.git
 
 # Installer les dépendances
 npm install
