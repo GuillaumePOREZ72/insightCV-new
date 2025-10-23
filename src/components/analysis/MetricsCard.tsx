@@ -1,7 +1,8 @@
 import { METRIC_CONFIG } from "../../../constants";
+import { PerformanceMetrics } from "../../types/analysis";
 
 /**
- * Config d'une métriqye individuelle
+ * Config d'une métrique individuelle (UI)
  */
 interface MetricConfig {
   key: string;
@@ -16,7 +17,7 @@ interface MetricConfig {
  * Props du composant MetricsCard
  */
 interface MetricsCardProps {
-  metrics?: Record<string, number>;
+  metrics: PerformanceMetrics;
   title?: string;
   icon?: string;
 }
@@ -31,7 +32,7 @@ const typedConfig = METRIC_CONFIG as MetricConfig[];
  */
 
 export default function MetricsCard({
-  metrics = {},
+  metrics,
   title = "Indicateurs de performance",
   icon = "📊",
 }: MetricsCardProps) {

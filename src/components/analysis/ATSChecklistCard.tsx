@@ -1,9 +1,4 @@
-/* Elément de checklist ATS */
-
-interface ChecklistItem {
-  label: string;
-  present: boolean;
-}
+import { ChecklistItem } from "../../types/analysis";
 
 /**
  * Props du composant ATSChecklistCard
