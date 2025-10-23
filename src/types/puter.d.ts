@@ -7,7 +7,7 @@
 /**
  * Message de chat pour l'API IA
  */
-interface PuterChatMessage {
+export interface PuterChatMessage {
   role: "system" | "user";
   content: string;
 }
@@ -15,7 +15,7 @@ interface PuterChatMessage {
 /**
  * Options pour l'appel à l'IA
  */
-interface PuterChatOptions {
+export interface PuterChatOptions {
   model?: string;
   temperature?: number;
 }
@@ -23,7 +23,7 @@ interface PuterChatOptions {
 /**
  * Réponse de l'API Puter AI
  */
-interface PuterChatResponse {
+export interface PuterChatResponse {
   message?: {
     content: string;
   };
@@ -32,7 +32,7 @@ interface PuterChatResponse {
 /**
  * Provider IA de Puter
  */
-interface PuterAIProvider {
+export interface PuterAIProvider {
   chat(
     messages: PuterChatMessage[],
     options?: PuterChatOptions
@@ -42,14 +42,14 @@ interface PuterAIProvider {
 /**
  * Service d'authentification Puter
  */
-interface PuterAuth {
+export interface PuterAuth {
   isSignedIn(): boolean;
 }
 
 /**
  * Interface globale Puter
  */
-interface Puter {
+export interface Puter {
   ai?: PuterAIProvider;
   auth?: PuterAuth;
 }
@@ -63,4 +63,4 @@ declare global {
   }
 }
 
-export {};
+

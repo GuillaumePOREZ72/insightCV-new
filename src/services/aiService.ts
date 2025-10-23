@@ -1,8 +1,19 @@
+import { AnalysisResult } from "../types/analysis";
+import { PuterAIProvider, PuterChatResponse } from "../types/puter";
+
 /**
  * Service d'analyse IA via Puter
+ *
+ * Gère la communication avec l'API Puter AI pour analyser le CV
  */
 export class AIService {
-  constructor(aiProvider = window.puter?.ai) {
+  private aiProvider: PuterAIProvider | undefined;
+
+  /**
+   * Constructeur du service IA
+   * @param aiProvider - Provider IA (par défaut: window.puter.ai)
+   */
+  constructor(aiProvider: PuterAIProvider | undefined = window.puter?.ai) {
     this.aiProvider = aiProvider;
   }
 
@@ -10,17 +21,17 @@ export class AIService {
    * Vérifie que le provider IA est disponible et authentifié
    * @returns {boolean} true si l'IA est prête
    */
-  isReady() {
-    return !!this.aiProvider?.chat && window.puter?.auth?.isSignedIn?.();
+  isReady(): boolean {
+    return !!(this.aiProvider?.chat && window.puter?.auth?.isSignedIn?.());
   }
 
   /**
    * Parse la réponse JSON de l'IA (gère les cas où le JSON est enrobé de texte)
    * @param {string} response - Réponse brute de l'IA
-   * @returns {Object} Objet JSON parsé
+   * @returns {AnalysisResult} Objet JSON parsé
    * @throws {Error} si le parsing échoue
    */
-  parseResponse(response) {
+  parseResponse(response: string): AnalysisResult {
     try {
       // Extraire le JSON même s'il est entouré de texte
       const jsonMatch = response.match(/\{[\s\S]*\}/);
@@ -29,10 +40,11 @@ export class AIService {
         throw new Error("Aucun JSON trouvé dans la réponse");
       }
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      const cleanJson = jsonMatch[0];
+      const parsed = JSON.parse(cleanJson) as AnalysisResult;
 
       // Validation basique
-      if (!parsed.overallScore && !parsed.error) {
+      if (!parsed.overallScore) {
         throw new Error(
           `Structure de réponse invalide. Reçu: ${JSON.stringify(
             parsed
@@ -41,8 +53,11 @@ export class AIService {
       }
 
       return parsed;
-    } catch (error) {
-      throw new Error(`Échec du parsing de la réponse IA : ${error.message}`);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        throw new Error(`Échec du parsing de la réponse IA : ${error.message}`);
+      }
+      throw new Error("Échec du parsing de la réponse IA : erreur inconnue");
     }
   }
 
@@ -50,10 +65,13 @@ export class AIService {
    * Analyse un CV via l'IA
    * @param {string} resumeText - Texte du CV
    * @param {string} prompt - Template du prompt
-   * @returns {Promise<Object>} Résultat de l'analyse
+   * @returns {Promise<AnalysisResult>} - Résultat de l'analyse
    * @throws {Error} Si l'analyse échoue
    */
-  async analyzeResume(resumeText, prompt) {
+  async analyzeResume(
+    resumeText: string,
+    prompt: string
+  ): Promise<AnalysisResult> {
     if (!this.isReady()) {
       throw new Error(
         "Le service IA n'est pas disponible. Connectez-vous à Puter."
@@ -84,7 +102,7 @@ export class AIService {
       Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`;
 
       const userPrompt = prompt.replace("{{DOCUMENT_TEXT}}", resumeText);
-      const response = await this.aiProvider.chat(
+      const response = await this.aiProvider!.chat(
         [
           {
             role: "system",
@@ -112,16 +130,14 @@ export class AIService {
 
       const result = this.parseResponse(content);
 
-      if (result.error) {
-        throw new Error(result.error);
-      }
-
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       console.error("❌ Erreur Puter AI:", error);
 
-      const errorMessage = error?.message || String(error) || "Erreur inconnue";
+      const errorMessage =
+        error instanceof Error ? error.message : String(error);
 
+      // Gestion des erreurs spécifiques Puter
       if (errorMessage.includes("Permission denied")) {
         throw new Error(
           "Connexion Puter requise. Rechargez la page et connectez-vous."
@@ -140,6 +156,7 @@ export class AIService {
       ) {
         throw new Error("Problème de connexion. Vérifiez votre réseau.");
       }
+      // Re-throw l'erreur si elle n'est pas gérée
       throw error;
     }
   }
