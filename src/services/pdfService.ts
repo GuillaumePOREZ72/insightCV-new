@@ -1,5 +1,10 @@
 import * as pdfjsLib from "pdfjs-dist";
 import pdfjsWorker from "pdfjs-dist/build/pdf.worker.min?url";
+import {
+  PDFDocumentProxy,
+  PDFPageProxy,
+  TextItem,
+} from "pdfjs-dist/types/src/display/api";
 
 pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
 
@@ -7,11 +12,10 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = pdfjsWorker;
  * Service d'extraction de texte depuis un PDF
  *
  * Ce service isole toute la logique PDF de React.
- * Il est testable et réutilisable indépendamment.
  */
 export class PDFService {
-  static MAX_FILE_SIZE = 10 * 1024 * 1024;
-  static ALLOWED_MIME_TYPE = "application/pdf";
+  static readonly MAX_FILE_SIZE: number = 10 * 1024 * 1024;
+  static readonly ALLOWED_MIME_TYPE = "application/pdf" as const;
 
   constructor() {}
 
@@ -21,7 +25,7 @@ export class PDFService {
    * @throws {Error} Si le fichier est invalide
    * @returns {boolean} true si valide
    */
-  validateFile(file) {
+  validateFile(file: File): boolean {
     if (!file) {
       throw new Error("Aucun fichier fourni.");
     }
@@ -43,12 +47,14 @@ export class PDFService {
    * @param {File} file - Fichier PDF
    * @returns {Promise<string>} Texte extrait
    */
-  async extractText(file) {
+  async extractText(file: File): Promise<string> {
     this.validateFile(file);
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      const pdf: PDFDocumentProxy = await pdfjsLib.getDocument({
+        data: arrayBuffer,
+      }).promise;
 
       // Extraction parallèle de toutes les pages
       const pageTexts = await Promise.all(
@@ -63,11 +69,14 @@ export class PDFService {
         throw new Error("Le PDF ne contient aucun texte extractible");
       }
       return fullText;
-    } catch (error) {
-      if (error.message.includes("Invalid PDF")) {
-        throw new Error("Le fichier PDF est corrompu ou invalide");
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        if (error.message.includes("Invalid PDF")) {
+          throw new Error("Le fichier PDF est corrompu ou invalide");
+        }
+        throw error;
       }
-      throw error;
+      throw new Error("Erreur inconnue lors de l'extraction du PDF");
     }
   }
 
@@ -78,10 +87,20 @@ export class PDFService {
    * @param {number} pageNumber - Numéro de la page (commence à 1)
    * @returns {Promise<string>} Texte de la page
    */
-  async extractPageText(pdf, pageNumber) {
+  async extractPageText(
+    pdf: PDFDocumentProxy,
+    pageNumber: number
+  ): Promise<string> {
     const page = await pdf.getPage(pageNumber);
     const textContent = await page.getTextContent();
-    return textContent.items.map((item) => item.str).join(" ");
+    return textContent.items
+      .map((item) => {
+        if ("str" in item) {
+          return item.str;
+        }
+        return "";
+      })
+      .join(" ");
   }
 }
 
