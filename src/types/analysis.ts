@@ -11,7 +11,7 @@ export interface PerformanceMetrics {
   formatting: number;
   contentQuality: number;
   atsCompatibility: number;
-  keywordOPtimization: number;
+  keywordOptimization: number;
   impactMetrics: number;
 }
 

@@ -1,3 +1,20 @@
+import { ChecklistItem } from "./src/types/analysis";
+
+/**
+ * Configuration d'une métrique de performance
+ */
+export interface MetricConfigItem {
+  key: string;
+  label: string;
+  defaultValue: number;
+  colorClass: string;
+  shadowClass: string;
+  icon: string;
+}
+
+/**
+ * Constantes de l'application
+ */
 const constants = {
   ANALYZE_RESUME_PROMPT: `Tout d'abord, déterminez si ce document est réellement un CV. Recherchez :
 - Expérience professionnelle, historique de travail ou informations sur l'emploi
@@ -79,9 +96,9 @@ Pour proTips, donnez des conseils professionnels qui les aideront dans leur rech
 
 Texte du document :
 {{DOCUMENT_TEXT}}`,
-};
+} as const;
 
-export const METRIC_CONFIG = [
+export const METRIC_CONFIG: readonly MetricConfigItem[] = [
   {
     key: "formatting",
     label: "Mise en forme",
@@ -122,62 +139,62 @@ export const METRIC_CONFIG = [
     shadowClass: "group-hover/item:shadow-orange-500/30",
     icon: "📊",
   },
-];
+] as const;
 
 /**
  * Construit une checklist de présence basée sur le texte du CV
  * @param text - Texte extrait du CV
  * @returns Liste des éléments vérifiés avec leur statut
  */
-export const buildPresenceChecklist = (text) => {
-  const hay = (text || "").toLowerCase();
+export const buildPresenceChecklist = (text: string): ChecklistItem[] => {
+  const normalizedText = (text || "").toLowerCase();
   return [
     {
       label: "Titres de sections standard",
       present:
         /experience|education|skills|summary|objective|work history|professional experience|employment/.test(
-          hay
+          normalizedText
         ),
     },
     {
       label: "Informations de contact",
       present: /email|phone|linkedin|github|portfolio|@|\.com|\.net|\.org/.test(
-        hay
+        normalizedText
       ),
     },
     {
       label: "Mots-clés et compétences",
       present:
         /skills|technologies|tech skills|competencies|programming|software|tools|javascript|python|java|react|node|sql|html|css|aws|docker|kubernetes|agile|scrum|git|api|database|framework|library|language|technology|stack/.test(
-          hay
+          normalizedText
         ),
     },
     {
       label: "Réalisations quantifiées",
       present:
         /\d+%|\d+ percent|\d+ people|\d+ team|\d+ project|\d+ year|\d+ month|\d+ dollar|\$\d+|\d+ users|\d+ customers|\d+ revenue|\d+ growth|\d+ improvement|\d+ reduction|\d+ increase|\d+ decrease/.test(
-          hay
+          normalizedText
         ),
     },
     {
       label: "Verbes d'action",
       present:
         /developed|created|implemented|managed|led|designed|built|improved|increased|decreased|achieved|delivered|launched|optimized|streamlined|enhanced|established|coordinated|facilitated|orchestrated|spearheaded|pioneered|architected|engineered|deployed|maintained|supported|troubleshot|resolved|analyzed|researched|evaluated|assessed|planned|organized|executed|completed|finished|accomplished|generated|produced|created|developed|built|constructed|assembled|fabricated|manufactured|produced|yielded|resulted|caused|brought|about|led|to|contributed|to|helped|assisted|aided|supported|enabled|empowered|facilitated|promoted|encouraged|fostered|nurtured|cultivated|developed|grew|expanded|scaled|increased|boosted|enhanced|improved|upgraded|refined|polished|perfected|optimized|streamlined|simplified|clarified|organized|structured|arranged|systematized|standardized|formalized|institutionalized|established|founded|created|initiated|started|began|commenced|launched|introduced|unveiled|revealed|disclosed|announced|declared|proclaimed|stated|expressed|communicated|conveyed|transmitted|delivered|presented|demonstrated|exhibited|displayed|showcased|highlighted|emphasized|stressed|underscored|accentuated|featured|spotlighted|focused|centered|concentrated|targeted|aimed|directed|guided|steered|navigated|piloted|drove|propelled|pushed|advanced|progressed|moved|forward|accelerated|expedited|hastened|rushed|hurried|sped|up|quickened|fastened|accelerated|boosted|enhanced|amplified|magnified|multiplied|doubled|tripled|quadrupled|quintupled|sextupled|septupled|octupled|nonupled|decupled/.test(
-          hay
+          normalizedText
         ),
     },
     {
       label: "Expérience professionnelle",
       present:
         /experience|employment|work history|professional experience|job|position|role|career|occupation|employment|work|job|position|role|title|responsibilities|duties|tasks|projects|initiatives|achievements|accomplishments|contributions|impact|results|outcomes|deliverables|outputs|work|employment|job|position|role|title|company|organization|employer|client|customer|stakeholder|team|department|division|unit|group|section|branch|office|location|site|facility|premises|workplace|workstation|desk|office|cubicle|workspace|environment|setting|context|situation|circumstance|condition|state|status|level|grade|rank|tier|category|class|type|kind|sort|variety|form|style|manner|way|method|approach|technique|strategy|tactic|procedure|process|system|framework|model|paradigm|theory|concept|idea|notion|thought|belief|opinion|view|perspective|standpoint|position|stance|attitude|mindset|outlook|approach|methodology|philosophy|principle|value|standard|criterion|benchmark|measure|metric|indicator|signal|sign|mark|token|symbol|emblem|badge|insignia|logo|brand|label|tag|stamp|seal|signature|autograph|mark|trace|track|trail|path|route|way|road|street|avenue|boulevard|highway|freeway|expressway|turnpike|parkway|drive|lane|alley|path|trail|track|route|way|road|street|avenue|boulevard|highway|freeway|expressway|turnpike|parkway|drive|lane|alley/.test(
-          hay
+          normalizedText
         ),
     },
     {
       label: "Section formation",
       present:
         /education|bachelor|master|phd|university|degree|college|school|academic|academy|institute|institution|faculty|department|program|course|curriculum|syllabus|textbook|lecture|seminar|workshop|tutorial|training|certification|certificate|diploma|transcript|gpa|grade|score|mark|result|outcome|achievement|accomplishment|success|performance|progress|development|growth|improvement|enhancement|advancement|promotion|elevation|upgrade|boost|lift|raise|increase|improvement|enhancement|betterment|refinement|polishing|perfection|optimization|streamlining|simplification|clarification|organization|structuring|arrangement|systematization|standardization|formalization|institutionalization|establishment|foundation|creation|initiation|start|beginning|commencement|launch|introduction|unveiling|revelation|disclosure|announcement|declaration|proclamation|statement|expression|communication|conveyance|transmission|delivery|presentation|demonstration|exhibition|display|showcase|highlighting|emphasis|stress|underscoring|accentuation|featuring|spotlighting|focusing|centering|concentration|targeting|aiming|directing|guiding|steering|navigating|piloting|driving|propelling|pushing|advancing|progressing|moving|forward|accelerating|expediting|hastening|rushing|hurrying|speeding|up|quickening|fastening|accelerating|boosting|enhancing|amplifying|magnifying|multiplying|doubling|tripling|quadrupling|quintupling|sextupling|septupling|octupling|nonupling|decupling/.test(
-          hay
+          normalizedText
         ),
     },
   ];
