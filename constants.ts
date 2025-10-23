@@ -124,6 +124,11 @@ export const METRIC_CONFIG = [
   },
 ];
 
+/**
+ * Construit une checklist de présence basée sur le texte du CV
+ * @param text - Texte extrait du CV
+ * @returns Liste des éléments vérifiés avec leur statut
+ */
 export const buildPresenceChecklist = (text) => {
   const hay = (text || "").toLowerCase();
   return [
