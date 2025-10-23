@@ -1,10 +1,15 @@
+/* Elément de checklist ATS */
+
 interface ChecklistItem {
   label: string;
   present: boolean;
 }
 
+/**
+ * Props du composant ATSChecklistCard
+ */
 interface ATSChecklistCardProps {
-  items: ChecklistItem[];
+  items?: ChecklistItem[];
   title?: string;
   icon?: string;
 }
@@ -18,8 +23,8 @@ interface ATSChecklistCardProps {
  */
 
 export default function ATSChecklistCard({
-  items,
-  title = "Liste de compatibiloté ATS",
+  items = [],
+  title = "Liste de compatibilité ATS",
   icon = "🤖",
 }: ATSChecklistCardProps) {
   return (
@@ -32,16 +37,21 @@ export default function ATSChecklistCard({
       <div className="space-y-2">
         {items.map((item, index) => (
           <div key={index} className="flex items-start gap-2 text-slate-200">
+            <span className="text-lg">{item.present ? "✅" : "❌"}</span>
             <span
               className={`${
                 item.present ? "text-emerald-400" : "text-red-400"
               }`}
             >
-              {item.present ? "✅" : "❌"}
+              {item.label}
             </span>
-            <span>{item.label}</span>
           </div>
         ))}
+        {items.length === 0 && (
+          <p className="text-slate-400 text-sm">
+            Aucun élément de checklist disponible
+          </p>
+        )}
       </div>
     </div>
   );
