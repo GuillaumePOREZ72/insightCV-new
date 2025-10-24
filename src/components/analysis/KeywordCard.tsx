@@ -1,10 +1,8 @@
 interface KeywordsCardProps {
   keywords: string[];
+  tip?: string;
   title?: string;
   icon?: string;
-  tip: string
-
-
 }
 
 /**
@@ -14,7 +12,6 @@ interface KeywordsCardProps {
  * @param {string} [props.icon="🔑"] - Icône
  * @param {string} [props.tip] - Conseil personnalisé
  */
-
 export default function KeywordCard({
   keywords = [],
   title = "Mots-clés recommandés",

@@ -8,6 +8,9 @@ import constants from "../../constants";
 /**
  * État de l'analyse de CV
  */
+/**
+ * État de l'analyse de CV
+ */
 interface ResumeAnalysisState {
   aiReady: boolean;
   isLoading: boolean;
@@ -16,6 +19,19 @@ interface ResumeAnalysisState {
   analysis: AnalysisResult | null;
   presenceChecklist: ChecklistItem[];
   error: string | null;
+}
+
+interface useResumeAnalysisReturn {
+  // Etat
+  state: ResumeAnalysisState;
+
+  // Actions
+  analyzeFile: (file: File) => Promise<void>;
+  reset: () => void;
+
+  // Helpers
+  hasResults: boolean;
+  isReady: boolean;
 }
 
 /**
@@ -42,7 +58,7 @@ const INITIAL_STATE: ResumeAnalysisState = {
  *
  * @returns État et actions pour l'analyse de CV
  */
-export const useResumeAnalysis = () => {
+export const useResumeAnalysis = (): useResumeAnalysisReturn => {
   const [state, setState] = useState<ResumeAnalysisState>(INITIAL_STATE);
 
   /**
@@ -80,6 +96,8 @@ export const useResumeAnalysis = () => {
         presenceChecklist: checklist,
         isLoading: false,
       }));
+
+      await handleAnalyze();
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
@@ -153,13 +171,19 @@ export const useResumeAnalysis = () => {
     setState(INITIAL_STATE);
   };
 
+  const hasResults: boolean = !!state.analysis;
+  const isReady: boolean = state.aiReady && !state.isLoading;
+
   return {
     // État
-    ...state,
+    state,
 
     // Actions
-    handleFileUpload,
-    handleAnalyze,
-    handleReset,
+    analyzeFile: handleFileUpload,
+    reset: handleReset,
+
+    // Helpers
+    hasResults,
+    isReady,
   };
 };

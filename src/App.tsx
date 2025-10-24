@@ -1,3 +1,4 @@
+import React from "react";
 import { useResumeAnalysis } from "./hooks/useResumeAnalysis";
 import Header from "./components/layout/Header";
 import LoadingSpinner from "./components/common/LoadingSpinner";
@@ -15,7 +16,12 @@ import MetricsCard from "./components/analysis/MetricsCard";
 import ATSChecklistCard from "./components/analysis/ATSChecklistCard";
 import KeywordCard from "./components/analysis/KeywordCard";
 
-function App() {
+/**
+ *
+ * @returns Composant principal de l'application
+ * Gère le flux complet de l'analyse de CV
+ */
+function App(): React.ReactElement {
   const { state, analyzeFile, reset, hasResults, isReady } =
     useResumeAnalysis();
 
@@ -39,7 +45,7 @@ function App() {
         )}
 
         {/* ==================== RÉSULTATS DE L'ANALYSE ==================== */}
-        {hasResults && (
+        {hasResults && state.uploadedFile && state.analysis && (
           <div className="space-y-6 p-4 sm:px-8 lg:px-16">
             {/* Card: Fichier analysé */}
             <FileCard fileName={state.uploadedFile.name} onReset={reset} />
@@ -87,11 +93,14 @@ function App() {
               </div>
 
               <ATSInfoCard />
-              <ATSChecklistCard checklist={state.presenceChecklist} />
+              <ATSChecklistCard items={state.presenceChecklist} />
             </div>
 
             {/* Card: Mots-clés recommandés */}
-            <KeywordCard keywords={state.analysis.keywords} />
+            <KeywordCard
+              keywords={state.analysis.keywords}
+              tip="Pensez à incorporer ces mots-clés naturellement dans votre CV pour améliorer la compatibilité ATS."
+            />
           </div>
         )}
       </div>
