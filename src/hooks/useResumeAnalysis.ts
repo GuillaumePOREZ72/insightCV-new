@@ -8,9 +8,6 @@ import constants from "../../constants";
 /**
  * État de l'analyse de CV
  */
-/**
- * État de l'analyse de CV
- */
 interface ResumeAnalysisState {
   aiReady: boolean;
   isLoading: boolean;
@@ -97,7 +94,17 @@ export const useResumeAnalysis = (): useResumeAnalysisReturn => {
         isLoading: false,
       }));
 
-      await handleAnalyze();
+      if (aiService.isReady()) {
+        await handleAnalyze();
+      } else {
+        console.warn("⚠️ PDF extrait mais analyse IA non disponible");
+        setState((prev) => (
+          {
+            ...prev,
+            error: "PDF chargé avec succès, mais l'analyse IA n'est pas disponible. Connectez-vous à Puter pour continuer."
+          }
+        ))
+      }
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
@@ -172,7 +179,7 @@ export const useResumeAnalysis = (): useResumeAnalysisReturn => {
   };
 
   const hasResults: boolean = !!state.analysis;
-  const isReady: boolean = state.aiReady && !state.isLoading;
+  const isReady: boolean = !state.isLoading;
 
   return {
     // État
