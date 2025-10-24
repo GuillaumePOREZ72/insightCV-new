@@ -5,7 +5,7 @@ Application web React qui analyse automatiquement les CVs en PDF et fournit des 
 ## ✨ Features
 
 - 📄 Upload de CV en PDF
-- 🤖 Analyse par IA (Puter/OpenAI)
+- 🤖 Analyse par IA (Puter)
 - 📊 Score global et métriques détaillées
 - 💡 Recommandations personnalisées
 - ✅ Checklist de compatibilité ATS
@@ -15,11 +15,11 @@ Application web React qui analyse automatiquement les CVs en PDF et fournit des 
 ## 🛠️ Technologies
 
 - **React 19** - UI Framework
+- **TypeScript** - Langage typé pour plus de robustesse
 - **Vite** - Build tool
 - **Tailwind CSS** - Styling
 - **PDF.js** - Extraction de texte
 - **Puter AI** - Analyse IA
-- **JavaScript ES6+** - Logique métier
 
 ## 🚀 Installation
 
