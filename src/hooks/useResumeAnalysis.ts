@@ -94,17 +94,7 @@ export const useResumeAnalysis = (): useResumeAnalysisReturn => {
         isLoading: false,
       }));
 
-      if (aiService.isReady()) {
-        await handleAnalyze();
-      } else {
-        console.warn("⚠️ PDF extrait mais analyse IA non disponible");
-        setState((prev) => (
-          {
-            ...prev,
-            error: "PDF chargé avec succès, mais l'analyse IA n'est pas disponible. Connectez-vous à Puter pour continuer."
-          }
-        ))
-      }
+      await handleAnalyze(text);
     } catch (error: unknown) {
       const errorMessage =
         error instanceof Error
@@ -121,20 +111,13 @@ export const useResumeAnalysis = (): useResumeAnalysisReturn => {
 
   /**
    * Lance l'analyse IA du CV
+   * @param resumeText - Texte du CV à analyser
    */
-  const handleAnalyze = async (): Promise<void> => {
-    if (!state.resumeText) {
+  const handleAnalyze = async (resumeText: string): Promise<void> => {
+    if (!resumeText) {
       setState((prev) => ({
         ...prev,
         error: "Aucun texte de CV à analyser",
-      }));
-      return;
-    }
-
-    if (!aiService.isReady()) {
-      setState((prev) => ({
-        ...prev,
-        error: "Service IA non disponible. Connectez-vous à Puter.",
       }));
       return;
     }
@@ -148,7 +131,7 @@ export const useResumeAnalysis = (): useResumeAnalysisReturn => {
     try {
       // Analyse du CV via l'IA
       const result = await aiService.analyzeResume(
-        state.resumeText,
+        resumeText,
         constants.ANALYZE_RESUME_PROMPT
       );
 

@@ -7,26 +7,25 @@ import { PuterAIProvider, PuterChatResponse } from "../types/puter";
  * Gère la communication avec l'API Puter AI pour analyser le CV
  */
 export class AIService {
-  private aiProvider: PuterAIProvider | undefined;
-
   /**
-   * Constructeur du service IA
-   * @param aiProvider - Provider IA (par défaut: window.puter.ai)
+   * Obtient le provider IA (vérification tardive = lazy evaluation)
+   * @returns {PuterAIProvider | undefined}
    */
-  constructor(aiProvider: PuterAIProvider | undefined = window.puter?.ai) {
-    this.aiProvider = aiProvider;
+  private getAIProvider(): PuterAIProvider | undefined {
+    return window.puter?.ai;
   }
 
   /**
-   * Vérifie que le provider IA est disponible et authentifié
-   * @returns {boolean} true si l'IA est prête
+   * Vérifie que le provider IA est disponible
+   * @returns {boolean} true si l'IA est disponible
    */
   isReady(): boolean {
-    return !!(this.aiProvider?.chat && window.puter?.auth?.isSignedIn?.());
+    const provider = this.getAIProvider();
+    return !!provider;
   }
 
   /**
-   * Parse la réponse JSON de l'IA (gère les cas où le JSON est enrobé de texte)
+   * Parse la réponse JSON de l'IA
    * @param {string} response - Réponse brute de l'IA
    * @returns {AnalysisResult} Objet JSON parsé
    * @throws {Error} si le parsing échoue
@@ -72,9 +71,10 @@ export class AIService {
     resumeText: string,
     prompt: string
   ): Promise<AnalysisResult> {
-    if (!this.isReady()) {
+    const aiProvider = this.getAIProvider();
+    if (!aiProvider) {
       throw new Error(
-        "Le service IA n'est pas disponible. Connectez-vous à Puter."
+        "Le service IA n'est pas disponible. Rechargez la page."
       );
     }
 
@@ -102,7 +102,7 @@ export class AIService {
       Réponds UNIQUEMENT avec le JSON, sans texte avant ou après.`;
 
       const userPrompt = prompt.replace("{{DOCUMENT_TEXT}}", resumeText);
-      const response = await this.aiProvider!.chat(
+      const response = await aiProvider.chat(
         [
           {
             role: "system",
@@ -129,8 +129,8 @@ export class AIService {
       }
 
       const result = this.parseResponse(content);
-
       return result;
+      
     } catch (error: unknown) {
       console.error("❌ Erreur Puter AI:", error);
 
