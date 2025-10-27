@@ -36,7 +36,7 @@ export interface PuterAIProvider {
   chat(
     messages: PuterChatMessage[],
     options?: PuterChatOptions
-  ): Promise<PuterChatResponse | string>;
+  ): Promise<PuterChatResponse>;
 }
 
 /**
@@ -62,5 +62,3 @@ declare global {
     puter?: Puter;
   }
 }
-
-
