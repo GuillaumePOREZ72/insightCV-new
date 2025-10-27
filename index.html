@@ -9,34 +9,6 @@
   <body>
     <div id="root"></div>
     <script src="https://js.puter.com/v2/"></script>
-    <script>
-      // Config Puter avec authentification
-      window.addEventListener("load", () => {
-        try {
-          if (window.puter) {
-            console.log("✅ Puter SDK chargé");
-    
-            if (window.puter.auth) {
-              try {
-                const isSignedIn = window.puter.auth.isSignedIn();
-                if (isSignedIn) {
-                  console.log("✅ Utilisateur Puter connecté");
-                } else {
-                  console.log("ℹ️ Mode Puter anonyme (limites d'usage appliquées)");
-                }
-              } catch (error) {
-                console.log("ℹ️ Puter en mode public - Erreur auth (normal)");
-              }
-            }
-          } else {
-            console.warn("⚠️ Puter SDK non chargé");
-          }
-        } catch (error) {
-          // ✅ Capture TOUTES les erreurs Puter
-          console.warn("⚠️ Erreur Puter (l'app continue)", error);
-        }
-      });
-    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
